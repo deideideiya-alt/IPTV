@@ -2231,9 +2231,16 @@ body{
   position:sticky;top:0;z-index:6;
 }
 .time-grid-header .corner{
-  font-size:14px;color:rgba(255,255,255,.45);padding-left:16px;
   position:sticky;left:0;top:0;z-index:7;
   background:rgba(8,8,20,.98);
+  display:flex;flex-direction:column;justify-content:center;
+  gap:2px;padding-left:16px;line-height:1.2;
+}
+.time-grid-header .corner .corner-num{
+  font-size:13px;font-weight:600;color:rgba(255,200,87,.85);
+}
+.time-grid-header .corner .corner-name{
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.55);
 }
 .slot-label{
   /* left-aligned so the label's left edge sits on the column's start (= the
@@ -4159,7 +4166,7 @@ body[data-page="epg-config"] .top-bar{display:none}
        + full-day (24h × 30min) channel×time grid.
        ========================================== -->
   <div class="page" id="page-guide" data-page="guide">
-    <div class="title-bar"><div class="page-title">My Playlist</div></div>
+    <div class="title-bar"><div class="page-title">Live TV</div></div>
 
     <div class="guide-layout">
       <!-- GLOBAL APP RAIL -->
@@ -5185,7 +5192,7 @@ function chUpdateHeader(){
 function renderChTimeGridHeader(){
   const head = document.getElementById('chTimeGridHeader');
   if(!head) return;
-  head.innerHTML = '<div class="corner">Channel · Time →</div>';
+  head.innerHTML = '<div class="corner"><span class="corner-num">频道号</span><span class="corner-name">频道名称</span></div>';
   for(let s=0; s<CH_TOTAL_SLOTS; s++){
     const isHour = (s%2===0);
     const d = document.createElement('div');
@@ -5457,7 +5464,7 @@ function go(page){
     type:'Add playlist / Type', m3u:'Add playlist / M3U',
     xc:'Add playlist / Xtream Codes', stalker:'Add playlist / Stalker Portal',
     success:'Import',
-    guide:'My Playlist / Program Guide',
+    guide:'Live TV / Program Guide',
     favorites:'My Favorites',
     player:'Player',
     'ai-home':'Search',
@@ -5812,7 +5819,7 @@ function handleActivate(el){
     case 'terms-get-started':
       state.privacyAccepted = true;
       state.pmStayOnPlaylistMgmt = true;
-      go('home'); return;
+      go('guide'); return;
     case 'terms-consent':
       closePopup('termsModal');
       openAddM3UAfterConsent(); return;
@@ -6716,7 +6723,7 @@ function renderTimeGridHeader(){
   ['timeGridHeader','favTimeGridHeader'].forEach(id=>{
     const head = document.getElementById(id);
     if(!head) return;
-    head.innerHTML = '<div class="corner">Channel · Time →</div>';
+    head.innerHTML = '<div class="corner"><span class="corner-num">频道号</span><span class="corner-name">频道名称</span></div>';
     for(let s=0; s<48; s++){
       const isHour = (s%2===0);
       const d = document.createElement('div');
