@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1920, initial-scale=1, viewport-fit=cover" />
-<title>TiviMate IPTV — TV Prototype</title>
+<title>IPTV+ — TV Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -289,7 +289,7 @@ body{
 .focusable.focused.toggle.on .check{box-shadow:var(--shadow-accent)}
 
 /* ========================================================
-   PAGE 1 — SPLASH (full-screen static branded image)
+   PAGE 1 — SPLASH (full-screen branded image + 3s loader)
    ======================================================== */
 #page-splash{
   background:#02030a;
@@ -300,43 +300,75 @@ body{
   background:url('splash.jpg') center center / cover no-repeat;
   z-index:1;
 }
+.splash-loader{
+  position:absolute;left:80px;right:640px;bottom:90px;
+  z-index:3;
+  font-family:'Inter',sans-serif;
+}
+.splash-loader-track{
+  width:100%;max-width:520px;height:6px;
+  background:rgba(255,255,255,.12);
+  border-radius:3px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+.splash-loader-bar{
+  width:0%;height:100%;
+  background:linear-gradient(90deg,#ffd75e,#ffb836);
+  border-radius:3px;
+  box-shadow:0 0 16px rgba(255,184,54,.55);
+  transition:width 50ms linear;
+}
+.splash-loader-text{
+  font-size:22px;color:#fff;
+}
+.splash-loader-text strong{
+  color:#ffc857;font-weight:600;
+}
 
 /* ========================================================
-   PAGE 2 — TERMS / GET STARTED
-   Uses the supplied getstarted.png as the full-screen artwork.
-   "Get Started" is a REAL clickable button, positioned exactly on top
-   of the pill drawn in the image so the focus ring lines up with it.
-   Image 1672x941 mapped onto the 1920x1080 stage:
-     pill bbox x:638-1033  y:600-683
-     => centre (50%, 68.2%)  =>  960px / 736px  =>  454x95 px
+   PAGE 2 — TERMS / GET STARTED (black + amber, matches splash)
    ======================================================== */
 #page-terms{
-  background:#000;
+  background:#0a0e27;
   overflow:hidden;
 }
-.terms-bg{
+.terms-blue{
   position:absolute;inset:0;
-  background:#000 url('getstarted.png') center center / contain no-repeat;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 80px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255,200,87,.06), transparent 60%),
+    radial-gradient(140% 90% at 50% 100%, rgba(255,154,60,.05), transparent 60%);
 }
-.terms-start{
-  position:absolute;
-  left:960px;top:736px;
-  transform:translate(-50%,-50%);
-  width:460px;height:96px;
-  background:transparent;
-  border:none;border-radius:999px;
-  cursor:pointer;z-index:3;
-  transition:box-shadow .15s ease, background .15s ease;
+.terms-logo-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:56px;
 }
-.terms-start:hover{background:rgba(255,255,255,.06)}
-/* keep the centring translate when focused (the global
-   .focusable.focused { transform: scale(1.02) } rule would otherwise drop it) */
-.terms-start.focused{
-  transform:translate(-50%,-50%) scale(1.02);
-  box-shadow:0 0 0 4px rgba(255,255,255,.8), 0 0 46px rgba(255,200,87,.55);
-  background:rgba(255,255,255,.05);
+.terms-logo-svg{
+  width:168px;height:168px;border-radius:34px;
+  background:linear-gradient(135deg,#ffd45a,#ffb836);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 60px rgba(255,200,87,.18),inset 0 -4px 0 rgba(0,0,0,.12);
+  margin-bottom:32px;
 }
-
+.terms-appname{
+  font-size:64px;font-weight:600;color:#fff;letter-spacing:1px;
+}
+.terms-get-started{
+  padding:20px 72px;font-size:26px;font-weight:700;
+  color:#1a1300;background:linear-gradient(135deg,#ffd75e,#ffb836);
+  border:none;border-radius:50px;
+  cursor:pointer;margin-bottom:52px;
+  box-shadow:0 14px 44px rgba(255,184,54,.45),inset 0 -3px 0 rgba(0,0,0,.18);
+  transition:all .15s ease;
+}
+.terms-get-started:hover{transform:translateY(-2px);box-shadow:0 20px 56px rgba(255,184,54,.65)}
+.terms-get-started.focused{outline:4px solid #fff;outline-offset:4px}
+.terms-legal{
+  font-size:18px;color:rgba(255,255,255,.92);
+  text-align:center;max-width:960px;line-height:1.65;
+}
 .terms-link{
   color:#fff;text-decoration:underline;text-underline-offset:3px;
   cursor:pointer;font-weight:500;
@@ -2254,7 +2286,7 @@ body{
   /* left-aligned so the label's left edge sits on the column's start (= the
      exact hour/half-hour grid line). This makes the label visually align
      with the left edge of program blocks whose gridColumn starts at the
-     same column. (Real EPGs / TiviMate-style apps do this too.) */
+     same column. (Real EPGs / IPTV+-style apps do this too.) */
   text-align:left;font-size:12px;color:rgba(255,255,255,.55);
   padding-left:10px;
   border-left:1px solid rgba(255,255,255,.04);
@@ -2286,13 +2318,6 @@ body{
 }
 .tg-row:hover{background:rgba(255,255,255,.02)}
 .tg-row.focused{background:rgba(255,200,87,.10)}
-/* IMPORTANT: never scale a .tg-row.
-   The global .focusable.focused{transform:scale(1.02)} would otherwise scale the
-   whole ~8920px-wide row about its centre, shifting the pinned 频道号/频道名称
-   columns (position:sticky; left:0) by tens of pixels whenever the mouse focuses
-   the row — i.e. the first two columns would visibly slide instead of staying put.
-   Focus is conveyed by the row tint + .tg-id background instead. */
-.tg-row.focusable.focused{transform:none}
 /* Selected channel row — subtle dark overlay across the entire row */
 .tg-row.selected{
   background:rgba(255,255,255,.055);
@@ -2647,12 +2672,13 @@ body{
   text-align:center;
 }
 .about-logo{
-  width:160px;height:80px;margin:0 auto 30px;
+  width:210px;height:80px;margin:0 auto 30px;
   display:flex;align-items:center;justify-content:center;
-  font-size:42px;font-weight:700;letter-spacing:3px;color:var(--accent);
+  font-size:32px;font-weight:700;letter-spacing:1px;color:#fff;
   border:2px solid var(--accent);border-radius:12px;
   background:rgba(255,184,54,.08);
 }
+.about-logo .plus{color:var(--accent);margin-left:2px}
 .about-name{font-size:56px;font-weight:600;color:#fff;margin-bottom:4px}
 .about-product{font-size:30px;color:var(--text-secondary);margin-bottom:18px}
 .about-version{font-size:26px;color:var(--text-secondary);margin-bottom:50px}
@@ -3554,14 +3580,42 @@ body[data-page="epg-config"] .top-bar{display:none}
        ========================================== -->
   <div class="page active" id="page-splash" data-page="splash">
     <div class="splash-image"></div>
+    <div class="splash-loader">
+      <div class="splash-loader-track"><div class="splash-loader-bar" id="splashLoaderBar"></div></div>
+    </div>
   </div>
 
   <!-- ==========================================
        PAGE: TERMS OF USE
        ========================================== -->
   <div class="page" id="page-terms" data-page="terms">
-    <div class="terms-bg"></div>
-    <button class="focusable terms-start" data-focus-key="terms-get-started" aria-label="Get Started"></button>
+    <div class="terms-blue">
+      <div class="terms-logo-wrap">
+        <div class="terms-logo-svg">
+          <svg viewBox="0 0 100 100" fill="none" width="112" height="112">
+            <defs>
+              <linearGradient id="tlg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset="1" stop-color="#e0d4ff"/>
+              </linearGradient>
+            </defs>
+            <rect x="8" y="22" width="84" height="52" rx="10" stroke="url(#tlg)" stroke-width="4"/>
+            <path d="M30 80 L70 80" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
+            <path d="M40 22 L20 38" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
+            <path d="M60 22 L80 38" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="50" cy="48" r="6" fill="url(#tlg)"/>
+          </svg>
+        </div>
+        <div class="terms-appname">IPTV+</div>
+      </div>
+      <button class="focusable terms-get-started" data-focus-key="terms-get-started">Get Started</button>
+      <p class="terms-legal">
+        By entering IPTV+, you agree to
+        <a class="focusable terms-link" data-focus-key="terms-open">Terms &amp; Conditions</a>.
+        To learn about our privacy practices, please visit our
+        <a class="focusable terms-link" data-focus-key="privacy-open">Privacy Policy</a>.
+      </p>
+    </div>
   </div>
 
   <!-- ==========================================
@@ -4181,7 +4235,7 @@ body[data-page="epg-config"] .top-bar{display:none}
        + full-day (24h × 30min) channel×time grid.
        ========================================== -->
   <div class="page" id="page-guide" data-page="guide">
-    <div class="title-bar"><div class="page-title">Live TV</div></div>
+    <div class="title-bar"><div class="page-title">My Playlist</div></div>
 
     <div class="guide-layout">
       <!-- GLOBAL APP RAIL -->
@@ -4326,8 +4380,8 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="st-title">About us</div>
           <div class="st-body">
             <div class="about-card">
-              <div class="about-logo">T</div>
-              <div class="about-name">TiviMate</div>
+              <div class="about-logo">IPTV<span class="plus">+</span></div>
+              <div class="about-name">IPTV+</div>
               <div class="about-product">IPTV Player</div>
               <div class="about-version">Version <b>4.5.0</b> (build 240)</div>
               <button class="focusable release-log focusable-about" data-focus-key="about-release">📋 Release Log</button>
@@ -4348,30 +4402,30 @@ body[data-page="epg-config"] .top-bar{display:none}
         <div class="st-panel" data-st="terms">
           <div class="st-title">Terms &amp; Conditions</div>
           <div class="st-body">
-            <p>These Terms of Use (Terms) are a legal agreement between you and Armobsoft FZE (Armobsoft, we, us, our), the developer of TiviMate (the app). By using the app, you agree to be bound by these Terms.</p>
-            <p>TiviMate is a media player. It does not provide, host, or distribute any content, or grant access to any media streams. To watch anything, you must add your own playlists. Any purchase or subscription unlocks application features only; it does not include, or provide access to, any channels, streams, or media content.</p>
+            <p>These Terms of Use (Terms) are a legal agreement between you and IPTV+ (we, us, our), the developer of IPTV+ (the app). By using the app, you agree to be bound by these Terms.</p>
+            <p>IPTV+ is a media player. It does not provide, host, or distribute any content, or grant access to any media streams. To watch anything, you must add your own playlists. Any purchase or subscription unlocks application features only; it does not include, or provide access to, any channels, streams, or media content.</p>
             <h2>Your responsibility for content</h2>
-            <p>You are solely responsible for any content you add to TiviMate. By using this app, you affirm that you are the rightful owner or have obtained the necessary licenses or permissions for all content you add, you will comply with all applicable local, national, and international laws regarding media use and distribution, and you will not use TiviMate for the unauthorized streaming or downloading of copyrighted material, or to access or distribute content that otherwise infringes on the rights of others.</p>
+            <p>You are solely responsible for any content you add to IPTV+. By using this app, you affirm that you are the rightful owner or have obtained the necessary licenses or permissions for all content you add, you will comply with all applicable local, national, and international laws regarding media use and distribution, and you will not use IPTV+ for the unauthorized streaming or downloading of copyrighted material, or to access or distribute content that otherwise infringes on the rights of others.</p>
             <h2>No endorsement of third-party content</h2>
-            <p>TiviMate does not host, provide, or control any third-party content. Inclusion of a playlist in TiviMate does not constitute endorsement of its contents, and we have no relationship with the providers of any content you add.</p>
+            <p>IPTV+ does not host, provide, or control any third-party content. Inclusion of a playlist in IPTV+ does not constitute endorsement of its contents, and we have no relationship with the providers of any content you add.</p>
             <h2>License</h2>
-            <p>TiviMate grants you a personal, non-transferable license to use the app on devices you own or control. You may not redistribute, resell, modify, reverse-engineer, or attempt to extract the source code of the app.</p>
+            <p>IPTV+ grants you a personal, non-transferable license to use the app on devices you own or control. You may not redistribute, resell, modify, reverse-engineer, or attempt to extract the source code of the app.</p>
             <h2>Purchases and subscriptions</h2>
-            <p>TiviMate offers a one-time lifetime purchase and one or more auto-renewing subscriptions. The lifetime purchase is a single payment with no recurring charges. An auto-renewing subscription renews automatically for successive periods of the same length as its billing period (for example, monthly or yearly) at the then-current price, and your payment method is charged at the start of each renewal period, unless you cancel before the renewal date. The available plans, their billing periods, and their prices are shown at the point of purchase. You can manage or cancel a subscription at any time: for purchases made through an app store, in your account settings with that store; for contact the store of purchase to request a refund. For purchases made directly from our website, all sales are final and we do not offer refunds for partial subscription periods. We may, at our sole discretion, grant refunds case by case in response to support requests. Nothing in this section limits any statutory consumer rights, including any applicable right of withdrawal for digital content, where such rights have not been validly waived at the time of purchase.</p>
+            <p>IPTV+ offers a one-time lifetime purchase and one or more auto-renewing subscriptions. The lifetime purchase is a single payment with no recurring charges. An auto-renewing subscription renews automatically for successive periods of the same length as its billing period (for example, monthly or yearly) at the then-current price, and your payment method is charged at the start of each renewal period, unless you cancel before the renewal date. The available plans, their billing periods, and their prices are shown at the point of purchase. You can manage or cancel a subscription at any time: for purchases made through an app store, in your account settings with that store; for contact the store of purchase to request a refund. For purchases made directly from our website, all sales are final and we do not offer refunds for partial subscription periods. We may, at our sole discretion, grant refunds case by case in response to support requests. Nothing in this section limits any statutory consumer rights, including any applicable right of withdrawal for digital content, where such rights have not been validly waived at the time of purchase.</p>
             <h2>No warranty</h2>
-            <p>TiviMate is provided as is without warranty of any kind. We do not guarantee uninterrupted operation, compatibility with any specific content or service, or that the app will meet your requirements. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
+            <p>IPTV+ is provided as is without warranty of any kind. We do not guarantee uninterrupted operation, compatibility with any specific content or service, or that the app will meet your requirements. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
             <h2>Limitation of liability</h2>
             <p>To the maximum extent permitted by law, we are not liable for any damages arising from your use of the app, including damages arising from content you access through the app. Nothing in these Terms excludes or limits our liability where it would be unlawful to do so, including liability for fraud or for death or personal injury caused by our negligence.</p>
             <h2>Indemnification</h2>
             <p>To the maximum extent permitted by law, you agree to reimburse us for any costs or damages arising from claims related to content you add to the app. This indemnification obligation survives termination of these Terms or your use of the app. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
             <h2>Time limit for claims</h2>
-            <p>Any legal claim against TiviMate related to your use of the app must be brought within one year of the event giving rise to the claim. This time limit does not apply where a longer period is required by mandatory law in your country of residence.</p>
+            <p>Any legal claim against IPTV+ related to your use of the app must be brought within one year of the event giving rise to the claim. This time limit does not apply where a longer period is required by mandatory law in your country of residence.</p>
             <h2>Copyright notices</h2>
-            <p>TiviMate does not host or store any media content. If you believe that content accessed through the app infringes your copyright or other intellectual property rights, please contact us at <b>support@tivimate.com</b> with a description of the claimed infringing material, the location where it appears, and your contact information. We will cooperate in good faith with rightsholders and act in accordance with applicable law.</p>
+            <p>IPTV+ does not host or store any media content. If you believe that content accessed through the app infringes your copyright or other intellectual property rights, please contact us at <b>support@iptvplus.com</b> with a description of the claimed infringing material, the location where it appears, and your contact information. We will cooperate in good faith with rightsholders and act in accordance with applicable law.</p>
             <h2>Privacy</h2>
             <p>Your use of the app is also governed by our Privacy Policy, which describes how we collect, use, and protect your data.</p>
             <h2>Termination</h2>
-            <p>You may stop using TiviMate at any time. We may suspend or terminate your license to use the app if you materially breach these Terms. Sections that by their nature should survive termination — including those on your responsibility for content, limitation of liability, and indemnification — continue to apply.</p>
+            <p>You may stop using IPTV+ at any time. We may suspend or terminate your license to use the app if you materially breach these Terms. Sections that by their nature should survive termination — including those on your responsibility for content, limitation of liability, and indemnification — continue to apply.</p>
             <h2>Changes to these Terms</h2>
             <p>We may update these Terms from time to time. If we make material changes, we will provide reasonable notice, for example within the app. Your continued use of the app after the changes take effect constitutes acceptance of the updated Terms.</p>
             <h2>Severability</h2>
@@ -4383,21 +4437,21 @@ body[data-page="epg-config"] .top-bar{display:none}
         <div class="st-panel" data-st="privacy">
           <div class="st-title">Privacy Policy</div>
           <div class="st-body">
-            <p>TiviMate respects your privacy. This page summarizes the key points of our privacy practices; the full Privacy Policy is available on our website.</p>
+            <p>IPTV+ respects your privacy. This page summarizes the key points of our privacy practices; the full Privacy Policy is available on our website.</p>
             <h2>What we collect</h2>
-            <p>TiviMate is a media player. We do not collect information about the media content you choose to play. We may collect basic, non-personal diagnostic information such as app version, device model, and crash reports solely to improve stability and performance.</p>
+            <p>IPTV+ is a media player. We do not collect information about the media content you choose to play. We may collect basic, non-personal diagnostic information such as app version, device model, and crash reports solely to improve stability and performance.</p>
             <h2>How we use information</h2>
             <p>Any diagnostic information we collect is used only to diagnose technical issues, improve app stability, and develop new features. We do not use this information to identify you personally, and we do not sell or rent your data to third parties.</p>
             <h2>Playlists and credentials</h2>
-            <p>Playlists and credentials you add to TiviMate are stored locally on your device. They are not transmitted to us or to any third party unless you explicitly choose to share them (for example, via a backup feature we may offer).</p>
+            <p>Playlists and credentials you add to IPTV+ are stored locally on your device. They are not transmitted to us or to any third party unless you explicitly choose to share them (for example, via a backup feature we may offer).</p>
             <h2>Your choices</h2>
             <p>You can clear all locally stored playlists and credentials at any time from the app's settings. You can also stop using the app at any time, which ends any future collection of diagnostic data.</p>
             <h2>Children's privacy</h2>
-            <p>TiviMate is not directed to children under the age of 13, and we do not knowingly collect personal information from children.</p>
+            <p>IPTV+ is not directed to children under the age of 13, and we do not knowingly collect personal information from children.</p>
             <h2>Changes to this Policy</h2>
             <p>We may update this Privacy Policy from time to time. If we make material changes, we will provide reasonable notice within the app. Your continued use of the app after the changes take effect constitutes acceptance of the updated Policy.</p>
             <h2>Contact</h2>
-            <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@tivimate.com</b>.</p>
+            <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@iptvplus.com</b>.</p>
           </div>
         </div>
       </section>
@@ -4491,8 +4545,8 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="page-title">About us</div>
     </div>
     <div class="about-card">
-      <div class="about-logo">T</div>
-      <div class="about-name">TiviMate</div>
+      <div class="about-logo">IPTV<span class="plus">+</span></div>
+      <div class="about-name">IPTV+</div>
       <div class="about-product">IPTV Player</div>
       <div class="about-version">Version <b>4.5.0</b> (build 240)</div>
       <button class="focusable release-log focusable-about" data-focus-key="about-release">📋 Release Log</button>
@@ -4716,7 +4770,7 @@ body[data-page="epg-config"] .top-bar{display:none}
                 <circle cx="26" cy="26" r="5" fill="#1a1f4e"/>
               </svg>
             </div>
-            <h2>Allow <strong>TiviMate</strong> to access photos and media on your device?</h2>
+            <h2>Allow <strong>IPTV+</strong> to access photos and media on your device?</h2>
             <p>You can change this later in <strong>Settings &gt; Apps</strong></p>
           </div>
           <div class="right">
@@ -4929,30 +4983,30 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="popup-back focusable" data-focus-key="terms-back-arrow" title="Back">‹</div>
       <div class="popup-title">Terms &amp; Conditions</div>
       <div class="terms-modal-body">
-        <p>These Terms of Use (Terms) are a legal agreement between you and Armobsoft FZE (Armobsoft, we, us, our), the developer of TiviMate (the app). By using the app, you agree to be bound by these Terms.</p>
-        <p>TiviMate is a media player. It does not provide, host, or distribute any content, or grant access to any media streams. To watch anything, you must add your own playlists. Any purchase or subscription unlocks application features only; it does not include, or provide access to, any channels, streams, or media content.</p>
+        <p>These Terms of Use (Terms) are a legal agreement between you and IPTV+ (we, us, our), the developer of IPTV+ (the app). By using the app, you agree to be bound by these Terms.</p>
+        <p>IPTV+ is a media player. It does not provide, host, or distribute any content, or grant access to any media streams. To watch anything, you must add your own playlists. Any purchase or subscription unlocks application features only; it does not include, or provide access to, any channels, streams, or media content.</p>
         <h2>Your responsibility for content</h2>
-        <p>You are solely responsible for any content you add to TiviMate. By using this app, you affirm that you are the rightful owner or have obtained the necessary licenses or permissions for all content you add, you will comply with all applicable local, national, and international laws regarding media use and distribution, and you will not use TiviMate for the unauthorized streaming or downloading of copyrighted material, or to access or distribute content that otherwise infringes on the rights of others.</p>
+        <p>You are solely responsible for any content you add to IPTV+. By using this app, you affirm that you are the rightful owner or have obtained the necessary licenses or permissions for all content you add, you will comply with all applicable local, national, and international laws regarding media use and distribution, and you will not use IPTV+ for the unauthorized streaming or downloading of copyrighted material, or to access or distribute content that otherwise infringes on the rights of others.</p>
         <h2>No endorsement of third-party content</h2>
-        <p>TiviMate does not host, provide, or control any third-party content. Inclusion of a playlist in TiviMate does not constitute endorsement of its contents, and we have no relationship with the providers of any content you add.</p>
+        <p>IPTV+ does not host, provide, or control any third-party content. Inclusion of a playlist in IPTV+ does not constitute endorsement of its contents, and we have no relationship with the providers of any content you add.</p>
         <h2>License</h2>
-        <p>TiviMate grants you a personal, non-transferable license to use the app on devices you own or control. You may not redistribute, resell, modify, reverse-engineer, or attempt to extract the source code of the app.</p>
+        <p>IPTV+ grants you a personal, non-transferable license to use the app on devices you own or control. You may not redistribute, resell, modify, reverse-engineer, or attempt to extract the source code of the app.</p>
         <h2>Purchases and subscriptions</h2>
-        <p>TiviMate offers a one-time lifetime purchase and one or more auto-renewing subscriptions. The lifetime purchase is a single payment with no recurring charges. An auto-renewing subscription renews automatically for successive periods of the same length as its billing period (for example, monthly or yearly) at the then-current price, and your payment method is charged at the start of each renewal period, unless you cancel before the renewal date. The available plans, their billing periods, and their prices are shown at the point of purchase. You can manage or cancel a subscription at any time: for purchases made through an app store, in your account settings with that store; for contact the store of purchase to request a refund. For purchases made directly from our website, all sales are final and we do not offer refunds for partial subscription periods. We may, at our sole discretion, grant refunds case by case in response to support requests. Nothing in this section limits any statutory consumer rights, including any applicable right of withdrawal for digital content, where such rights have not been validly waived at the time of purchase.</p>
+        <p>IPTV+ offers a one-time lifetime purchase and one or more auto-renewing subscriptions. The lifetime purchase is a single payment with no recurring charges. An auto-renewing subscription renews automatically for successive periods of the same length as its billing period (for example, monthly or yearly) at the then-current price, and your payment method is charged at the start of each renewal period, unless you cancel before the renewal date. The available plans, their billing periods, and their prices are shown at the point of purchase. You can manage or cancel a subscription at any time: for purchases made through an app store, in your account settings with that store; for contact the store of purchase to request a refund. For purchases made directly from our website, all sales are final and we do not offer refunds for partial subscription periods. We may, at our sole discretion, grant refunds case by case in response to support requests. Nothing in this section limits any statutory consumer rights, including any applicable right of withdrawal for digital content, where such rights have not been validly waived at the time of purchase.</p>
         <h2>No warranty</h2>
-        <p>TiviMate is provided as is without warranty of any kind. We do not guarantee uninterrupted operation, compatibility with any specific content or service, or that the app will meet your requirements. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
+        <p>IPTV+ is provided as is without warranty of any kind. We do not guarantee uninterrupted operation, compatibility with any specific content or service, or that the app will meet your requirements. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
         <h2>Limitation of liability</h2>
         <p>To the maximum extent permitted by law, we are not liable for any damages arising from your use of the app, including damages arising from content you access through the app. Nothing in these Terms excludes or limits our liability where it would be unlawful to do so, including liability for fraud or for death or personal injury caused by our negligence.</p>
         <h2>Indemnification</h2>
         <p>To the maximum extent permitted by law, you agree to reimburse us for any costs or damages arising from claims related to content you add to the app. This indemnification obligation survives termination of these Terms or your use of the app. Nothing in this section limits any statutory consumer rights that cannot be waived.</p>
         <h2>Time limit for claims</h2>
-        <p>Any legal claim against TiviMate related to your use of the app must be brought within one year of the event giving rise to the claim. This time limit does not apply where a longer period is required by mandatory law in your country of residence.</p>
+        <p>Any legal claim against IPTV+ related to your use of the app must be brought within one year of the event giving rise to the claim. This time limit does not apply where a longer period is required by mandatory law in your country of residence.</p>
         <h2>Copyright notices</h2>
-        <p>TiviMate does not host or store any media content. If you believe that content accessed through the app infringes your copyright or other intellectual property rights, please contact us at <b>support@tivimate.com</b> with a description of the claimed infringing material, the location where it appears, and your contact information. We will cooperate in good faith with rightsholders and act in accordance with applicable law.</p>
+        <p>IPTV+ does not host or store any media content. If you believe that content accessed through the app infringes your copyright or other intellectual property rights, please contact us at <b>support@iptvplus.com</b> with a description of the claimed infringing material, the location where it appears, and your contact information. We will cooperate in good faith with rightsholders and act in accordance with applicable law.</p>
         <h2>Privacy</h2>
         <p>Your use of the app is also governed by our Privacy Policy, which describes how we collect, use, and protect your data.</p>
         <h2>Termination</h2>
-        <p>You may stop using TiviMate at any time. We may suspend or terminate your license to use the app if you materially breach these Terms. Sections that by their nature should survive termination — including those on your responsibility for content, limitation of liability, and indemnification — continue to apply.</p>
+        <p>You may stop using IPTV+ at any time. We may suspend or terminate your license to use the app if you materially breach these Terms. Sections that by their nature should survive termination — including those on your responsibility for content, limitation of liability, and indemnification — continue to apply.</p>
         <h2>Changes to these Terms</h2>
         <p>We may update these Terms from time to time. If we make material changes, we will provide reasonable notice, for example within the app. Your continued use of the app after the changes take effect constitutes acceptance of the updated Terms.</p>
         <h2>Severability</h2>
@@ -5006,21 +5060,21 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="popup-back focusable" data-focus-key="privacy-back-arrow" title="Back">‹</div>
       <div class="popup-title">Privacy Policy</div>
       <div class="terms-modal-body">
-        <p>TiviMate respects your privacy. This page summarizes the key points of our privacy practices; the full Privacy Policy is available on our website.</p>
+        <p>IPTV+ respects your privacy. This page summarizes the key points of our privacy practices; the full Privacy Policy is available on our website.</p>
         <h2>What we collect</h2>
-        <p>TiviMate is a media player. We do not collect information about the media content you choose to play. We may collect basic, non-personal diagnostic information such as app version, device model, and crash reports solely to improve stability and performance.</p>
+        <p>IPTV+ is a media player. We do not collect information about the media content you choose to play. We may collect basic, non-personal diagnostic information such as app version, device model, and crash reports solely to improve stability and performance.</p>
         <h2>How we use information</h2>
         <p>Any diagnostic information we collect is used only to diagnose technical issues, improve app stability, and develop new features. We do not use this information to identify you personally, and we do not sell or rent your data to third parties.</p>
         <h2>Playlists and credentials</h2>
-        <p>Playlists and credentials you add to TiviMate are stored locally on your device. They are not transmitted to us or to any third party unless you explicitly choose to share them (for example, via a backup feature we may offer).</p>
+        <p>Playlists and credentials you add to IPTV+ are stored locally on your device. They are not transmitted to us or to any third party unless you explicitly choose to share them (for example, via a backup feature we may offer).</p>
         <h2>Your choices</h2>
         <p>You can clear all locally stored playlists and credentials at any time from the app's settings. You can also stop using the app at any time, which ends any future collection of diagnostic data.</p>
         <h2>Children's privacy</h2>
-        <p>TiviMate is not directed to children under the age of 13, and we do not knowingly collect personal information from children.</p>
+        <p>IPTV+ is not directed to children under the age of 13, and we do not knowingly collect personal information from children.</p>
         <h2>Changes to this Policy</h2>
         <p>We may update this Privacy Policy from time to time. If we make material changes, we will provide reasonable notice within the app. Your continued use of the app after the changes take effect constitutes acceptance of the updated Policy.</p>
         <h2>Contact</h2>
-        <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@tivimate.com</b>.</p>
+        <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@iptvplus.com</b>.</p>
       </div>
       <div class="popup-actions">
         <button class="focusable ghost" data-close-popup="privacyModal">Close</button>
@@ -5479,7 +5533,7 @@ function go(page){
     type:'Add playlist / Type', m3u:'Add playlist / M3U',
     xc:'Add playlist / Xtream Codes', stalker:'Add playlist / Stalker Portal',
     success:'Import',
-    guide:'Live TV / Program Guide',
+    guide:'My Playlist / Program Guide',
     favorites:'My Favorites',
     player:'Player',
     'ai-home':'Search',
@@ -5834,7 +5888,7 @@ function handleActivate(el){
     case 'terms-get-started':
       state.privacyAccepted = true;
       state.pmStayOnPlaylistMgmt = true;
-      go('guide'); return;
+      go('home'); return;
     case 'terms-consent':
       closePopup('termsModal');
       openAddM3UAfterConsent(); return;
@@ -7828,9 +7882,22 @@ window.addEventListener('load', ()=>{
     }, 200);
   }
 
-  // 3-second static branded splash, then enter the app
+  // 3-second branded splash loader, then enter the app
   if(shouldAutoAdvance){
-    setTimeout(()=> go('terms'), 3000);
+    const bar = document.getElementById('splashLoaderBar');
+    const duration = 3000;
+    const start = performance.now();
+    function tick(now){
+      const elapsed = now - start;
+      const pct = Math.min(100, (elapsed / duration) * 100);
+      if(bar) bar.style.width = pct + '%';
+      if(elapsed < duration){
+        requestAnimationFrame(tick);
+      } else {
+        go('terms');
+      }
+    }
+    requestAnimationFrame(tick);
   }
 
   rebuildFocusables();
