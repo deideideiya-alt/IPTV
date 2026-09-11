@@ -289,7 +289,7 @@ body{
 .focusable.focused.toggle.on .check{box-shadow:var(--shadow-accent)}
 
 /* ========================================================
-   PAGE 1 — SPLASH (full-screen branded image + 3s loader)
+   PAGE 1 — SPLASH (full-screen static branded image)
    ======================================================== */
 #page-splash{
   background:#02030a;
@@ -300,75 +300,28 @@ body{
   background:url('splash.jpg') center center / cover no-repeat;
   z-index:1;
 }
-.splash-loader{
-  position:absolute;left:80px;right:640px;bottom:90px;
-  z-index:3;
-  font-family:'Inter',sans-serif;
-}
-.splash-loader-track{
-  width:100%;max-width:520px;height:6px;
-  background:rgba(255,255,255,.12);
-  border-radius:3px;
-  overflow:hidden;
-  margin-bottom:16px;
-}
-.splash-loader-bar{
-  width:0%;height:100%;
-  background:linear-gradient(90deg,#ffd75e,#ffb836);
-  border-radius:3px;
-  box-shadow:0 0 16px rgba(255,184,54,.55);
-  transition:width 50ms linear;
-}
-.splash-loader-text{
-  font-size:22px;color:#fff;
-}
-.splash-loader-text strong{
-  color:#ffc857;font-weight:600;
-}
 
 /* ========================================================
-   PAGE 2 — TERMS / GET STARTED (black + amber, matches splash)
+   PAGE 2 — TERMS / GET STARTED (custom branded image + invisible button overlay)
    ======================================================== */
 #page-terms{
-  background:#0a0e27;
+  background:#000;
   overflow:hidden;
 }
-.terms-blue{
+.terms-bg{
   position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 80px;
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgba(255,200,87,.06), transparent 60%),
-    radial-gradient(140% 90% at 50% 100%, rgba(255,154,60,.05), transparent 60%);
+  background:#000 url('getstarted.png') center center / contain no-repeat;
 }
-.terms-logo-wrap{
-  display:flex;flex-direction:column;align-items:center;
-  margin-bottom:56px;
+.terms-start{
+  position:absolute;left:50%;top:62%;
+  transform:translate(-50%,-50%);
+  width:300px;height:72px;
+  background:transparent;
+  border:none;border-radius:36px;
+  cursor:pointer;z-index:2;
 }
-.terms-logo-svg{
-  width:168px;height:168px;border-radius:34px;
-  background:linear-gradient(135deg,#ffd45a,#ffb836);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 60px rgba(255,200,87,.18),inset 0 -4px 0 rgba(0,0,0,.12);
-  margin-bottom:32px;
-}
-.terms-appname{
-  font-size:64px;font-weight:600;color:#fff;letter-spacing:1px;
-}
-.terms-get-started{
-  padding:20px 72px;font-size:26px;font-weight:700;
-  color:#1a1300;background:linear-gradient(135deg,#ffd75e,#ffb836);
-  border:none;border-radius:50px;
-  cursor:pointer;margin-bottom:52px;
-  box-shadow:0 14px 44px rgba(255,184,54,.45),inset 0 -3px 0 rgba(0,0,0,.18);
-  transition:all .15s ease;
-}
-.terms-get-started:hover{transform:translateY(-2px);box-shadow:0 20px 56px rgba(255,184,54,.65)}
-.terms-get-started.focused{outline:4px solid #fff;outline-offset:4px}
-.terms-legal{
-  font-size:18px;color:rgba(255,255,255,.92);
-  text-align:center;max-width:960px;line-height:1.65;
-}
+.terms-start.focused{outline:4px solid rgba(255,255,255,.6);outline-offset:4px}
+
 .terms-link{
   color:#fff;text-decoration:underline;text-underline-offset:3px;
   cursor:pointer;font-weight:500;
@@ -3579,42 +3532,14 @@ body[data-page="epg-config"] .top-bar{display:none}
        ========================================== -->
   <div class="page active" id="page-splash" data-page="splash">
     <div class="splash-image"></div>
-    <div class="splash-loader">
-      <div class="splash-loader-track"><div class="splash-loader-bar" id="splashLoaderBar"></div></div>
-    </div>
   </div>
 
   <!-- ==========================================
        PAGE: TERMS OF USE
        ========================================== -->
   <div class="page" id="page-terms" data-page="terms">
-    <div class="terms-blue">
-      <div class="terms-logo-wrap">
-        <div class="terms-logo-svg">
-          <svg viewBox="0 0 100 100" fill="none" width="112" height="112">
-            <defs>
-              <linearGradient id="tlg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffffff"/>
-                <stop offset="1" stop-color="#e0d4ff"/>
-              </linearGradient>
-            </defs>
-            <rect x="8" y="22" width="84" height="52" rx="10" stroke="url(#tlg)" stroke-width="4"/>
-            <path d="M30 80 L70 80" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
-            <path d="M40 22 L20 38" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
-            <path d="M60 22 L80 38" stroke="url(#tlg)" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="50" cy="48" r="6" fill="url(#tlg)"/>
-          </svg>
-        </div>
-        <div class="terms-appname">TiviMate</div>
-      </div>
-      <button class="focusable terms-get-started" data-focus-key="terms-get-started">Get Started</button>
-      <p class="terms-legal">
-        By entering TiviMate, you agree to
-        <a class="focusable terms-link" data-focus-key="terms-open">Terms &amp; Conditions</a>.
-        To learn about our privacy practices, please visit our
-        <a class="focusable terms-link" data-focus-key="privacy-open">Privacy Policy</a>.
-      </p>
-    </div>
+    <div class="terms-bg"></div>
+    <button class="focusable terms-start" data-focus-key="terms-get-started" aria-label="Get Started"></button>
   </div>
 
   <!-- ==========================================
@@ -7881,22 +7806,9 @@ window.addEventListener('load', ()=>{
     }, 200);
   }
 
-  // 3-second branded splash loader, then enter the app
+  // 3-second static branded splash, then enter the app
   if(shouldAutoAdvance){
-    const bar = document.getElementById('splashLoaderBar');
-    const duration = 3000;
-    const start = performance.now();
-    function tick(now){
-      const elapsed = now - start;
-      const pct = Math.min(100, (elapsed / duration) * 100);
-      if(bar) bar.style.width = pct + '%';
-      if(elapsed < duration){
-        requestAnimationFrame(tick);
-      } else {
-        go('terms');
-      }
-    }
-    requestAnimationFrame(tick);
+    setTimeout(()=> go('terms'), 3000);
   }
 
   rebuildFocusables();
