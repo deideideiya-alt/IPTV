@@ -703,8 +703,12 @@ body{
   font-size:54px;font-weight:600;color:#fff;
   margin-bottom:48px;
 }
+#page-ai-home .ai-search-row{
+  display:flex;align-items:center;gap:20px;
+  width:min(1100px,86%);margin-bottom:42px;
+}
 #page-ai-home .ai-search{
-  width:min(900px,72%);height:84px;
+  flex:1;height:84px;
   border-radius:18px;
   background:rgba(255,255,255,.08);
   border:1.5px solid rgba(255,255,255,.20);
@@ -712,7 +716,6 @@ body{
   font-size:30px;padding:0 30px;
   display:flex;align-items:center;
   cursor:text;
-  margin-bottom:42px;
   transition:all .15s ease;
 }
 #page-ai-home .ai-search:hover,
@@ -728,7 +731,14 @@ body{
 #page-ai-home .ai-search.focused::placeholder{color:#666;}
 #page-ai-home .ai-chips{
   display:flex;flex-wrap:wrap;justify-content:center;gap:18px;
-  margin-bottom:60px;width:min(1100px,86%);
+  margin-bottom:60px;width:min(1260px,92%);
+}
+#page-ai-home .ai-keyword-label{
+  align-self:center;flex-shrink:0;
+  font-size:22px;font-weight:500;line-height:1;
+  color:rgba(255,255,255,.62);
+  white-space:nowrap;
+  margin-right:2px;
 }
 #page-ai-home .ai-chip{
   padding:16px 36px;border-radius:14px;
@@ -747,10 +757,10 @@ body{
   box-shadow:0 10px 24px rgba(0,0,0,.24);
 }
 #page-ai-home .ai-ask{
-  padding:20px 76px;border-radius:50px;
+  height:84px;padding:0 56px;border-radius:18px;
   background:#fff;
-  color:#111;font-size:30px;font-weight:700;
-  border:none;cursor:pointer;
+  color:#111;font-size:28px;font-weight:700;
+  border:none;cursor:pointer;white-space:nowrap;
   box-shadow:0 14px 40px rgba(0,0,0,.22);
   transition:all .15s ease;
 }
@@ -772,7 +782,7 @@ body{
 #page-ai-category .ai-cat-header{display:none;}
 #page-ai-category .ai-cat-desc{
   width:min(1200px,88%);text-align:left;
-  font-size:24px;line-height:1.34;color:#fff;
+  font-size:24px;line-height:1.34;color:rgba(255,255,255,.78);
   margin-top:14px;margin-bottom:18px;
 }
 #page-ai-category .ai-play-card{
@@ -833,7 +843,7 @@ body{
   background:#fff;color:#111;
 }
 #page-ai-category .ai-play-card-desc{
-  font-size:20px;color:rgba(255,255,255,.78);line-height:1.42;
+  font-size:20px;color:rgba(255,255,255,.95);line-height:1.42;
   margin-top:8px;
 }
 #page-ai-category .ai-play-card-url{
@@ -844,7 +854,7 @@ body{
 #page-ai-category .ai-cat-disclaimer{
   width:min(1200px,88%);
   margin-top:18px;
-  font-size:18px;color:rgba(255,255,255,.65);line-height:1.6;
+  font-size:18px;color:rgba(255,255,255,.82);line-height:1.6;
 }
 #page-ai-category .ai-cat-bottom{
   margin-top:auto;padding-top:36px;
@@ -910,16 +920,97 @@ body{
   outline:none;
   background:#fff;color:#111;
 }
+.addm3u-card .addm3u-cancel{
+  padding:16px 34px;border-radius:14px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;font-size:24px;font-weight:600;
+  cursor:pointer;transition:all .15s ease;
+}
+.addm3u-card .addm3u-cancel:hover,
+.addm3u-card .addm3u-cancel.focused{
+  background:rgba(255,255,255,.18);
+  transform:translateY(-2px);
+  outline:none;
+}
+.addm3u-card .addm3u-actions{gap:14px}
 
 /* ----- #page-ai-analyzing ----- */
 
 /* ----- #page-playlist-mgmt ----- */
+#page-playlist-mgmt{--pm-global-w:220px;}
+#page-playlist-mgmt.pm-rail-collapsed{--pm-global-w:74px;}
+#page-playlist-mgmt .pm-layout{
+  position:absolute;left:0;right:0;top:80px;bottom:0;
+  display:grid;
+  grid-template-columns:var(--pm-global-w) 1fr;
+  transition:grid-template-columns .25s cubic-bezier(.22,.61,.36,1);
+}
+/* App rail — mirrors the Channels / Guide rail (same look & collapse behavior) */
+#page-playlist-mgmt .ch-global-rail{
+  display:flex;flex-direction:column;gap:10px;
+  padding:20px 0 24px 18px;
+  border-right:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.18);
+  overflow:hidden;
+}
+#page-playlist-mgmt .ch-global-toggle{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.16);
+  color:#fff;font-size:28px;cursor:pointer;
+  transition:all .18s ease;flex-shrink:0;
+}
+#page-playlist-mgmt .ch-global-toggle:hover{
+  background:rgba(255,255,255,.18);transform:scale(1.05);
+}
+#page-playlist-mgmt .ch-global-toggle.focused{
+  background:#fff;color:#111;border-color:#fff;outline:none;
+}
+#page-playlist-mgmt .ch-global-toggle-ic{
+  display:inline-block;transition:transform .25s ease;
+  transform:translateX(-1px);
+}
+#page-playlist-mgmt.pm-rail-collapsed .ch-global-toggle-ic{transform:rotate(180deg) translateX(-1px)}
+#page-playlist-mgmt .ch-global-list{
+  display:flex;flex-direction:column;gap:8px;
+  padding-right:14px;flex:1 1 auto;
+}
+#page-playlist-mgmt .ch-global-list .ch-global-item:last-child{
+  margin-top:auto;
+  border-top:1px solid rgba(255,255,255,.12);
+  padding-top:18px;
+}
+#page-playlist-mgmt .ch-global-item{
+  display:flex;align-items:center;gap:14px;
+  padding:13px 14px;border-radius:14px;
+  font-size:20px;color:rgba(255,255,255,.78);
+  cursor:pointer;white-space:nowrap;
+  transition:all .18s ease;
+}
+#page-playlist-mgmt .ch-global-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+#page-playlist-mgmt .ch-global-item.focused{background:#fff;color:#111;outline:none;}
+#page-playlist-mgmt .ch-global-item.active{background:#fff;color:#111;}
+#page-playlist-mgmt .ch-global-ic{
+  width:28px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+#page-playlist-mgmt.pm-rail-collapsed .ch-global-rail{
+  padding-left:12px;padding-right:12px;align-items:center;
+}
+#page-playlist-mgmt.pm-rail-collapsed .ch-global-list{
+  padding-right:0;align-items:center;width:100%;
+}
+#page-playlist-mgmt.pm-rail-collapsed .ch-global-item{
+  justify-content:center;padding:13px 0;width:50px;
+}
+#page-playlist-mgmt.pm-rail-collapsed .ch-global-label{display:none}
+
 #page-playlist-mgmt .pm-wrap{
-  position:absolute;inset:0;top:80px;
+  position:relative;inset:auto;min-width:0;
   display:flex;flex-direction:column;
-  padding:0 80px 40px;
-  padding-right:430px;
-  padding-bottom:18px;
+  padding:0 430px 18px 80px;
 }
 #page-playlist-mgmt .pm-head{
   display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
@@ -984,8 +1075,10 @@ body{
   transition:all .15s ease;
   box-shadow:0 4px 14px rgba(0,0,0,.25);
 }
-#page-playlist-mgmt .pm-row-action.pm-row-delete{font-size:0;line-height:1}
-#page-playlist-mgmt .pm-row-action.pm-row-delete svg{width:26px;height:26px;color:rgba(255,255,255,.78)}
+#page-playlist-mgmt .pm-row-action.pm-row-delete,
+#page-playlist-mgmt .pm-row-action.pm-row-edit{font-size:0;line-height:1}
+#page-playlist-mgmt .pm-row-action.pm-row-delete svg,
+#page-playlist-mgmt .pm-row-action.pm-row-edit svg{width:26px;height:26px;color:rgba(255,255,255,.78)}
 #page-playlist-mgmt .pm-row-action:hover,
 #page-playlist-mgmt .pm-row-action.focused{
   background:rgba(255,255,255,.98);border-color:#fff;color:#111;
@@ -1020,6 +1113,38 @@ body{
 .pm-loader-text{
   font-size:20px;font-weight:500;color:rgba(255,255,255,.82);
   letter-spacing:.3px;
+}
+
+/* ----- #page-loading (standalone full-screen analyzing page) ----- */
+#page-loading{
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(4,4,9,.72);
+  backdrop-filter:blur(6px);
+}
+#page-loading .ld-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+}
+#page-loading .ld-ring{
+  width:180px;height:180px;border-radius:50%;
+  background:conic-gradient(#fff var(--ld-pct,0%), rgba(255,255,255,.14) 0);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:0 0 0 1px rgba(255,255,255,.10), 0 22px 70px rgba(0,0,0,.55);
+}
+#page-loading .ld-ring::before{
+  content:'';position:absolute;inset:16px;border-radius:50%;
+  background:rgba(10,10,14,.94);
+}
+#page-loading .ld-pct{
+  position:relative;z-index:1;
+  font-size:36px;font-weight:700;color:#fff;
+}
+#page-loading .ld-text{
+  font-size:23px;font-weight:600;color:rgba(255,255,255,.94);
+  letter-spacing:.3px;
+}
+#page-loading .ld-sub{
+  font-size:17px;font-weight:400;color:rgba(255,255,255,.52);
+  letter-spacing:.2px;
 }
 
 /* ----- #page-channels ----- */
@@ -1119,6 +1244,42 @@ body{
   justify-content:center;padding:13px 0;width:50px;
 }
 #page-channels.ch-rail-collapsed .ch-global-label{display:none}
+
+/* "Add playlist" stands out as a filled CTA button in the main sidebar */
+#page-channels .ch-global-item.ch-global-add-btn,
+#page-playlist-mgmt .ch-global-item.ch-global-add-btn{
+  margin-top:12px;
+  background:linear-gradient(135deg,#ffd75e,#ffb836);
+  color:#1a1338;font-weight:600;
+  box-shadow:0 6px 18px rgba(255,184,54,.32);
+}
+#page-channels .ch-global-item.ch-global-add-btn .ch-global-ic,
+#page-playlist-mgmt .ch-global-item.ch-global-add-btn .ch-global-ic{color:#1a1338;}
+#page-channels .ch-global-item.ch-global-add-btn:hover,
+#page-channels .ch-global-item.ch-global-add-btn.focused,
+#page-channels .ch-global-item.ch-global-add-btn.active,
+#page-playlist-mgmt .ch-global-item.ch-global-add-btn:hover,
+#page-playlist-mgmt .ch-global-item.ch-global-add-btn.focused,
+#page-playlist-mgmt .ch-global-item.ch-global-add-btn.active{
+  background:linear-gradient(135deg,#ffe488,#ffc24d);
+  color:#1a1338;
+  box-shadow:0 8px 22px rgba(255,184,54,.45);
+}
+/* Live TV (guide) rail reuses the same gold CTA for "Add playlist" */
+#page-guide .guide-global-item.ch-global-add-btn{
+  margin-top:12px;
+  background:linear-gradient(135deg,#ffd75e,#ffb836);
+  color:#1a1338;font-weight:600;
+  box-shadow:0 6px 18px rgba(255,184,54,.32);
+}
+#page-guide .guide-global-item.ch-global-add-btn .guide-global-ic{color:#1a1338;}
+#page-guide .guide-global-item.ch-global-add-btn:hover,
+#page-guide .guide-global-item.ch-global-add-btn.focused,
+#page-guide .guide-global-item.ch-global-add-btn.active{
+  background:linear-gradient(135deg,#ffe488,#ffc24d);
+  color:#1a1338;
+  box-shadow:0 8px 22px rgba(255,184,54,.45);
+}
 
 /* Guide global rail (same behavior as channels) */
 #page-guide .guide-global-rail{
@@ -1628,6 +1789,39 @@ body{
   display:flex;flex-direction:column;gap:24px;
   width:100%;max-width:260px;
 }
+/* EPG URL block inside the playlist card */
+#page-m3u-processed .mp-epg-block{
+  margin-top:0;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,200,87,.45);
+  border-radius:16px;
+  padding:20px 24px;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+#page-m3u-processed .mp-epg-block:hover{
+  background:rgba(255,200,87,.12);
+}
+#page-m3u-processed .mp-epg-block.focused{
+  border-color:rgba(255,200,87,.6);
+  box-shadow:0 0 0 3px rgba(255,200,87,.18);
+  transform:scale(1.02);
+}
+#page-m3u-processed .mp-epg-label{
+  font-size:20px;color:rgba(255,255,255,.6);
+  margin-bottom:8px;
+}
+#page-m3u-processed .mp-epg-value{
+  display:block;
+  width:100%;
+  font-size:26px;color:#ffc857;font-weight:500;
+  letter-spacing:-.3px;
+  word-break:break-all;
+  background:transparent;border:none;outline:none;
+  padding:0;margin:0;font-family:inherit;
+}
+#page-m3u-processed .mp-epg-value::placeholder{color:rgba(255,200,87,.55)}
+#page-m3u-processed .mp-epg-value.focused{color:#ffd75e}
 
 /* ========================================================
    PAGE: EPG CONFIG
@@ -2350,6 +2544,7 @@ body{
 .tg-row .tg-id .tg-logo.yellow{background:linear-gradient(135deg,#f5b800,#c98a00);color:#1a1338}
 .tg-row .tg-id .tg-logo.blue{background:linear-gradient(135deg,#3a7be8,#1c4a99)}
 .tg-row .tg-id .tg-logo.cyan{background:linear-gradient(135deg,#27b3b3,#0e6f6f)}
+.tg-row .tg-id .tg-logo.purple{background:linear-gradient(135deg,#a445f5,#6a1fd0);color:#fff}
 .tg-row .tg-id .tg-name{
   font-size:18px;color:#fff;font-weight:500;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -2829,6 +3024,16 @@ body{
 }
 .pin-btn:hover{transform:translateY(-2px)}
 .pin-btn.focused{outline:3px solid #fff;outline-offset:2px}
+.pin-change-pw{
+  margin-top:4px;
+  width:100%;height:56px;border-radius:14px;
+  font-size:20px;font-weight:600;color:#fff;
+  background:rgba(255,255,255,.10);
+  border:1.5px solid rgba(255,255,255,.22);
+  cursor:pointer;transition:all .15s ease;
+}
+.pin-change-pw:hover{transform:translateY(-2px);background:rgba(255,255,255,.18)}
+.pin-change-pw.focused{outline:3px solid #fff;outline-offset:2px}
 
 /* ----- Age rating page ----- */
 #page-age-rating{
@@ -3629,8 +3834,6 @@ body[data-page="epg-config"] .top-bar{display:none}
     </div>
     <div class="home-actions">
       <div class="focusable btn focusable-home" data-focus-key="home-live">Live TV <span class="arrow">›</span></div>
-      <div class="focusable btn focusable-home" data-focus-key="home-iptv">IPTV <span class="arrow">›</span></div>
-      <div class="focusable btn focusable-home" data-focus-key="home-mine">My playlist <span class="arrow">›</span></div>
       <div class="focusable btn focusable-home" data-focus-key="home-add">Add playlist</div>
     </div>
     <div class="focusable home-ad-entry" data-focus-key="home-ad">AD</div>
@@ -3661,7 +3864,7 @@ body[data-page="epg-config"] .top-bar{display:none}
           <span class="arrow">›</span>
         </div>
         <div class="focusable list-row ai-row focusable-type" data-focus-key="type-ai" style="margin-top:18px">
-          <span class="row-text">search</span>
+          <span class="row-text">Search</span>
           <span class="arrow">›</span>
         </div>
         <div class="focusable list-row focusable-type" data-focus-key="type-xc" style="margin-top:18px">
@@ -3717,10 +3920,7 @@ body[data-page="epg-config"] .top-bar{display:none}
                 <span id="qrStatusText">⏳ Waiting for connection…</span>
               </div>
               <div class="qr-tip">Scan QR code with your phone to enter URL.</div>
-              <div class="btn-row" style="margin-top:8px">
-                <button class="btn ghost" id="openPhoneBtn" style="height:60px;padding:0 28px;font-size:22px">📱 Open Phone Preview</button>
-              </div>
-              <div class="room-meta" id="roomMeta">Room code: AB12CD · Local IP: 192.168.1.42</div>
+              <div class="room-meta" id="roomMeta">Local IP: 192.168.1.42</div>
             </div>
           </div>
         </div>
@@ -3732,14 +3932,6 @@ body[data-page="epg-config"] .top-bar{display:none}
         <div class="focusable input-field focusable-m3u" data-focus-key="m3u-url" style="margin-top:14px">
           <input class="label" id="m3uUrl" placeholder="Enter URL" autocomplete="off"/>
           <span class="hint">URL</span>
-        </div>
-        <div class="focusable list-row focusable-m3u" data-focus-key="m3u-paste" style="margin-top:6px;min-width:auto;padding:0 24px;height:64px;font-size:26px">
-          <span class="row-text">Paste from clipboard</span>
-          <span class="arrow">›</span>
-        </div>
-        <div class="focusable list-row focusable-m3u" data-focus-key="m3u-local" style="margin-top:6px;min-width:auto;padding:0 24px;height:64px;font-size:26px">
-          <span class="row-text">Select local playlist</span>
-          <span class="arrow">›</span>
         </div>
         </div>
 
@@ -3793,14 +3985,6 @@ body[data-page="epg-config"] .top-bar{display:none}
             <div class="focusable input-field focusable-xc" data-focus-key="xc-pass">
               <input class="label" id="xcPass" placeholder="••••••••" type="password" autocomplete="off"/>
             </div>
-          </div>
-          <div class="focusable toggle focusable-xc" data-focus-key="xc-tv" id="xcTV">
-            <span class="check"></span>
-            <span>Include TV channels</span>
-          </div>
-          <div class="focusable toggle focusable-xc" data-focus-key="xc-vod" id="xcVOD">
-            <span class="check"></span>
-            <span>Include VOD</span>
           </div>
         </div>
         </div>
@@ -3937,20 +4121,19 @@ body[data-page="epg-config"] .top-bar{display:none}
         <div class="mp-title">Playlist is<br/>processed</div>
         <div class="mp-stats">
           <div class="stat-row"><span class="label">Channels:</span><span class="value" id="mpChannels">518</span></div>
-          <div class="stat-row"><span class="label">Movies:</span><span class="value" id="mpMovies">22</span></div>
         </div>
       </div>
       <div class="mp-center">
         <div class="mp-card">
+          <div class="mp-epg-block" id="mpEpgBlock">
+            <div class="mp-epg-label">Enter URL</div>
+            <input class="mp-epg-value focusable focusable-mp" data-focus-key="mp-epg-input" id="mpEpgValue" type="text" placeholder="http://epg.51zmt.top:8000/e.xml" autocomplete="off" spellcheck="false" />
+          </div>
           <div class="mp-card-label">Playlist name</div>
           <div class="mp-card-name" id="mpPlaylistName">live.zbds.top</div>
           <div class="mp-toggle-row focusable active" data-focus-key="mp-toggle-tv" id="mpToggleTv">
             <span class="mp-radio"></span>
             <span class="mp-toggle-text">TV playlist</span>
-          </div>
-          <div class="mp-toggle-row focusable" data-focus-key="mp-toggle-vod" id="mpToggleVod">
-            <span class="mp-radio"></span>
-            <span class="mp-toggle-text">VOD playlist<span class="sub">(no TV channels)</span></span>
           </div>
         </div>
       </div>
@@ -3963,45 +4146,6 @@ body[data-page="epg-config"] .top-bar{display:none}
     </div>
   </div>
 
-  <!-- ==========================================
-       PAGE: EPG CONFIG
-       ========================================== -->
-  <div class="page" id="page-epg-config" data-page="epg-config">
-    <div class="epg-wrap">
-      <div class="epg-left">
-        <div class="epg-icon">
-          <svg viewBox="0 0 100 100" fill="none">
-            <!-- EPG / refresh cycle icon -->
-            <path d="M84 50 A34 34 0 1 1 50 16" stroke="#ffc857" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M50 8 L50 22 L62 14 Z" fill="#ffc857"/>
-            <rect x="34" y="46" width="32" height="6" rx="2" fill="#ffb836"/>
-            <rect x="34" y="58" width="22" height="4" rx="2" fill="#ffb836" opacity=".7"/>
-          </svg>
-        </div>
-        <div class="epg-title">EPG URL</div>
-        <div class="epg-desc">
-          Enter EPG URL for the playlist.<br/>
-          You can add or change it later in the settings.<br/>
-          XMLTV format is only supported.
-        </div>
-      </div>
-      <div class="epg-center">
-        <div class="epg-input-card focusable focusable-epg" data-focus-key="epg-input" id="epgInputCard">
-          <div class="epg-input-label">Enter URL</div>
-          <div class="epg-input-value" id="epgInputValue">http://epg.51zmt.top:8000/e.xml</div>
-        </div>
-        <div class="epg-action focusable focusable-epg" data-focus-key="epg-paste">
-          <div class="epg-action-title">Paste from clipboard</div>
-        </div>
-      </div>
-      <div class="epg-right">
-        <div class="epg-nav">
-          <div class="focusable btn primary focusable-epg" data-focus-key="epg-done">Done</div>
-          <div class="focusable btn focusable-epg" data-focus-key="epg-back">‹ Back</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ==========================================
        PAGE: AI ASSISTANT — landing
@@ -4010,8 +4154,12 @@ body[data-page="epg-config"] .top-bar{display:none}
     <div class="ai-home-wrap">
       <div class="ai-back-circle focusable" data-focus-key="ai-back">‹</div>
       <div class="ai-title">Search</div>
-      <input class="ai-search focusable" data-focus-key="ai-search" id="aiSearch" type="text" placeholder="Local TV Channels" />
+      <div class="ai-search-row">
+        <input class="ai-search focusable" data-focus-key="ai-search" id="aiSearch" type="text" placeholder="Local TV Channels" />
+        <button class="ai-ask focusable" data-focus-key="ai-ask">search</button>
+      </div>
       <div class="ai-chips">
+        <div class="ai-keyword-label">Key word</div>
         <div class="ai-chip focusable active" data-focus-key="ai-chip-global" data-cat="Global">Global</div>
         <div class="ai-chip focusable" data-focus-key="ai-chip-categories" data-cat="Categories">Categories</div>
         <div class="ai-chip focusable" data-focus-key="ai-chip-sports" data-cat="Sports">Sports</div>
@@ -4019,7 +4167,6 @@ body[data-page="epg-config"] .top-bar{display:none}
         <div class="ai-chip focusable" data-focus-key="ai-chip-movies" data-cat="Movies">Movies</div>
         <div class="ai-chip focusable" data-focus-key="ai-chip-musics" data-cat="Musics">Musics</div>
       </div>
-      <button class="ai-ask focusable" data-focus-key="ai-ask">search</button>
     </div>
   </div>
 
@@ -4104,17 +4251,42 @@ body[data-page="epg-config"] .top-bar{display:none}
        PAGE: PLAYLIST MANAGEMENT
        ========================================== -->
   <div class="page" id="page-playlist-mgmt" data-page="playlist-mgmt">
-    <div class="pm-wrap">
-      <div class="pm-head">
-        <div class="pm-head-title">My Playlist</div>
-        <div class="pm-head-count" id="pmCount"></div>
+    <div class="pm-layout">
+      <aside class="ch-global-rail" id="pmGlobalRail">
+        <div class="ch-global-toggle focusable" data-focus-key="pm-global-toggle" title="Collapse sidebar">
+          <span class="ch-global-toggle-ic">‹</span>
+        </div>
+        <nav class="ch-global-list">
+          <div class="ch-global-item focusable" data-focus-key="ch-global-live"><span class="ch-global-ic">📺</span><span class="ch-global-label">Live TV</span></div>
+          <div class="ch-global-item focusable" data-focus-key="ch-global-iptv"><span class="ch-global-ic">📡</span><span class="ch-global-label">IPTV</span></div>
+          <div class="ch-global-item focusable active" data-focus-key="ch-global-my"><span class="ch-global-ic">📂</span><span class="ch-global-label">My playlist</span></div>
+          <div class="ch-global-item focusable ch-global-add-btn" data-focus-key="ch-global-add"><span class="ch-global-ic">＋</span><span class="ch-global-label">Add playlist</span></div>
+          <div class="ch-global-item focusable" data-focus-key="ch-global-settings"><span class="ch-global-ic">⚙</span><span class="ch-global-label">Settings</span></div>
+        </nav>
+      </aside>
+      <div class="pm-wrap">
+        <div class="pm-head">
+          <div class="pm-head-title">My Playlist</div>
+          <div class="pm-head-count" id="pmCount"></div>
+        </div>
+        <div class="pm-list" id="pmList"></div>
+        <div class="focusable pm-ad-entry" data-focus-key="pm-ad">AD</div>
       </div>
-    <div class="pm-list" id="pmList"></div>
-    <div class="focusable pm-ad-entry" data-focus-key="pm-ad">AD</div>
     </div>
     <div class="pm-loader" id="pmLoader">
       <div class="pm-loader-ring"><span class="pm-loader-pct" id="pmLoaderPct">0%</span></div>
       <div class="pm-loader-text">Playlist is analyzing...</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE: LOADING (full-screen analyzing)
+       ========================================== -->
+  <div class="page" id="page-loading" data-page="loading">
+    <div class="ld-wrap">
+      <div class="ld-ring"><span class="ld-pct" id="ldPct">0%</span></div>
+      <div class="ld-text" id="ldText">Playlist is analyzing...</div>
+      <div class="ld-sub" id="ldSub">Loading channels and program guide</div>
     </div>
   </div>
 
@@ -4132,7 +4304,7 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="ch-global-item focusable" data-focus-key="ch-global-live"><span class="ch-global-ic">📺</span><span class="ch-global-label">Live TV</span></div>
           <div class="ch-global-item focusable active" data-focus-key="ch-global-iptv"><span class="ch-global-ic">📡</span><span class="ch-global-label">IPTV</span></div>
           <div class="ch-global-item focusable" data-focus-key="ch-global-my"><span class="ch-global-ic">📂</span><span class="ch-global-label">My playlist</span></div>
-          <div class="ch-global-item focusable" data-focus-key="ch-global-add"><span class="ch-global-ic">＋</span><span class="ch-global-label">Add playlist</span></div>
+          <div class="ch-global-item focusable ch-global-add-btn" data-focus-key="ch-global-add"><span class="ch-global-ic">＋</span><span class="ch-global-label">Add playlist</span></div>
           <div class="ch-global-item focusable" data-focus-key="ch-global-settings"><span class="ch-global-ic">⚙</span><span class="ch-global-label">Settings</span></div>
         </nav>
       </aside>
@@ -4230,6 +4402,24 @@ body[data-page="epg-config"] .top-bar{display:none}
   </div>
 
   <!-- ==========================================
+       POPUP: RENAME PLAYLIST
+       ========================================== -->
+  <div class="popup-backdrop" id="renamePlaylistModal">
+    <div class="addm3u-card" style="width:820px">
+      <div class="popup-close" data-close-popup="renamePlaylistModal">✕</div>
+      <div class="addm3u-title">Rename playlist</div>
+      <div class="addm3u-field">
+        <label>Playlist name</label>
+        <input id="renamePlaylistInput" type="text" autocomplete="off" placeholder="Enter a name" />
+      </div>
+      <div class="addm3u-actions">
+        <button class="addm3u-cancel focusable" data-focus-key="rename-cancel" data-close-popup="renamePlaylistModal">Cancel</button>
+        <button class="addm3u-add focusable" data-focus-key="rename-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
        PAGE: MY PLAYLIST (PROGRAM GUIDE)
        Left rail (categories + nested filter chips) + channel-detail card
        + full-day (24h × 30min) channel×time grid.
@@ -4247,7 +4437,7 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="guide-global-item focusable active" data-focus-key="guide-global-live"><span class="guide-global-ic">📺</span><span class="guide-global-label">Live TV</span></div>
           <div class="guide-global-item focusable" data-focus-key="guide-global-iptv"><span class="guide-global-ic">📡</span><span class="guide-global-label">IPTV</span></div>
           <div class="guide-global-item focusable" data-focus-key="guide-global-my"><span class="guide-global-ic">📂</span><span class="guide-global-label">My playlist</span></div>
-          <div class="guide-global-item focusable" data-focus-key="guide-global-add"><span class="guide-global-ic">＋</span><span class="guide-global-label">Add playlist</span></div>
+          <div class="guide-global-item focusable ch-global-add-btn" data-focus-key="guide-global-add"><span class="guide-global-ic">＋</span><span class="guide-global-label">Add playlist</span></div>
           <div class="guide-global-item focusable" data-focus-key="guide-global-settings"><span class="guide-global-ic">⚙</span><span class="guide-global-label">Settings</span></div>
         </nav>
       </aside>
@@ -4361,7 +4551,7 @@ body[data-page="epg-config"] .top-bar{display:none}
       <aside class="settings-side">
         <div class="settings-side-title">Settings</div>
         <div class="settings-nav">
-          <div class="focusable settings-nav-item" data-focus-key="settings-parental">Parental rating</div>
+          <div class="focusable settings-nav-item" data-focus-key="settings-parental">Parental Control</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-language">Language</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-about">About us</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-contact">Contact us</div>
@@ -4382,7 +4572,6 @@ body[data-page="epg-config"] .top-bar{display:none}
             <div class="about-card">
               <div class="about-logo">IPTV<span class="plus">+</span></div>
               <div class="about-name">IPTV+</div>
-              <div class="about-product">IPTV Player</div>
               <div class="about-version">Version <b>4.5.0</b> (build 240)</div>
               <button class="focusable release-log focusable-about" data-focus-key="about-release">📋 Release Log</button>
             </div>
@@ -4464,10 +4653,10 @@ body[data-page="epg-config"] .top-bar{display:none}
   <div class="page" id="page-parental-pin" data-page="parental-pin">
     <div class="title-bar">
       <div class="page-back focusable" data-focus-key="pin-back-arrow" title="Back">‹</div>
-      <div class="page-title">Enter Password</div>
+      <div class="page-title">Parental Control</div>
     </div>
-    <div class="pin-card">
-      <div class="pin-subtitle">Enter your 4-digit PIN</div>
+    <div class="pin-card" id="pinCard">
+      <div class="pin-subtitle" id="pinSubtitle">Enter your 4-digit PIN</div>
       <div class="pin-dots" id="pinDots">
         <span></span><span></span><span></span><span></span>
       </div>
@@ -4490,23 +4679,11 @@ body[data-page="epg-config"] .top-bar{display:none}
         <button class="focusable pin-btn ghost" data-focus-key="pin-cancel">Cancel</button>
         <button class="focusable pin-btn" data-focus-key="pin-ok">OK</button>
       </div>
+      <button class="focusable pin-change-pw" id="pinChangePwBtn" data-focus-key="pin-changepw" style="display:none">Change password</button>
     </div>
-  </div>
-
-  <!-- ==========================================
-       PAGE: AGE RATING
-       ========================================== -->
-  <div class="page" id="page-age-rating" data-page="age-rating">
-    <div class="title-bar">
-      <div class="page-back focusable" data-focus-key="age-back-arrow" title="Back">‹</div>
-      <div class="page-title">Age Rating</div>
-    </div>
-    <div class="age-card">
+    <div class="age-card" id="parentalCard" style="display:none">
+      <div class="pin-subtitle">Allowed age rating</div>
       <div class="age-list" id="ageList"></div>
-      <div class="age-actions">
-        <button class="focusable age-btn ghost" data-focus-key="age-cancel">Cancel</button>
-        <button class="focusable age-btn" data-focus-key="age-save">Save</button>
-      </div>
     </div>
   </div>
 
@@ -4547,7 +4724,6 @@ body[data-page="epg-config"] .top-bar{display:none}
     <div class="about-card">
       <div class="about-logo">IPTV<span class="plus">+</span></div>
       <div class="about-name">IPTV+</div>
-      <div class="about-product">IPTV Player</div>
       <div class="about-version">Version <b>4.5.0</b> (build 240)</div>
       <button class="focusable release-log focusable-about" data-focus-key="about-release">📋 Release Log</button>
     </div>
@@ -4739,8 +4915,6 @@ body[data-page="epg-config"] .top-bar{display:none}
 
         <div class="ph-status" id="phoneStatus">⌛ Waiting for TV to be ready…</div>
         <div class="ph-browse-here">BrowseHere: <span id="phoneBrowseHere">https://iptv-org.github.io/iptv/categories/movies.m3u</span></div>
-
-        <button class="primary-btn" id="phoneSend" disabled>📺 发送到电视</button>
       </div>
       <!-- Chrome bottom bar -->
       <div class="chrome-bottom">
@@ -5143,7 +5317,7 @@ const state = {
   // mock room code
   room: { code: 'AB12CD', ip: '192.168.1.42' },
   // settings / parental control
-  parentalAge: 18,
+  parentalAge: 'null',
   lockedProgs: new Set(),
   pinMode: 'parental', // 'parental' | 'unlock'
   selectedLang: 'English',
@@ -5157,7 +5331,7 @@ const state = {
 /* ============================================================
    PAGE MANAGER
    ============================================================ */
-const pages = ['splash','terms','home','type','m3u','xc','stalker','success','m3u-processed','epg-config','guide','favorites','player','ai-home','ai-category','playlist-mgmt','channels','channel-detail','settings','about','parental-pin','age-rating','locked-program','language','contact'];
+const pages = ['splash','terms','home','type','m3u','xc','stalker','success','m3u-processed','loading','guide','favorites','player','ai-home','ai-category','playlist-mgmt','channels','channel-detail','settings','about','parental-pin','age-rating','locked-program','language','contact'];
 const LOCKED_PROG_KEY = 'verite|10:11|2';
 
 /* ---- AI Assistant flow data ---- */
@@ -5191,7 +5365,7 @@ function askAi(){
   const nameEl = document.getElementById('aiCatName');
   if(nameEl) nameEl.textContent = cat.name;
   const descEl = document.getElementById('aiCatDesc');
-  if(descEl) descEl.textContent = cat.desc;
+  if(descEl) descEl.textContent = 'Discover and manage global live streams. Search by category or add your own custom IPTV playlists.';
   const cardDesc = document.getElementById('aiCatCardDesc');
   if(cardDesc) cardDesc.textContent = cat.desc;
   const u = document.getElementById('aiCatUrl');
@@ -5314,8 +5488,7 @@ function renderChTimeGridRows(){
     const id = document.createElement('div');
     id.className = 'tg-id';
     id.innerHTML =
-      `<span class="tg-num">${ch.num}</span>
-       <span class="tg-logo ${ch.logoClass||''}">${ch.short}</span>
+      `<span class="tg-logo ${ch.logoClass||''}">${ch.short}</span>
        <span class="tg-name">${ch.name}</span>`;
     row.appendChild(id);
 
@@ -5539,10 +5712,11 @@ function go(page){
     'ai-home':'Search',
     'ai-category':'Search / Recommendation',
     'playlist-mgmt':'Playlist Management',
+    loading:'Loading',
     channels:'Channels',
     'channel-detail':'Channels / Detail',
     settings:'Settings',
-    'parental-pin':'Enter Password',
+    'parental-pin':'Parental Control',
     'age-rating':'Age Rating',
     'locked-program':'Parental Control',
     language:'Language',
@@ -5556,12 +5730,9 @@ function go(page){
       const nameEl = document.getElementById('mpPlaylistName');
       if(nameEl) nameEl.textContent = state.processed.name;
     }
+    const mpEpgEl = document.getElementById('mpEpgValue');
+    if(mpEpgEl && state.epg && state.epg.url) mpEpgEl.value = state.epg.url;
     selectMpToggle(state.processed.mode || 'tv', false);
-  }
-  // On entering epg-config, sync the visible URL from state
-  if(page==='epg-config'){
-    const el = document.getElementById('epgInputValue');
-    if(el && state.epg && state.epg.url) el.textContent = state.epg.url;
   }
   // On entering Guide, populate time grid, sync fav/rem state
   if(page==='guide'){
@@ -5603,8 +5774,7 @@ function go(page){
   // On entering Playlist Management, render the dynamic list of added playlists
   if(page==='playlist-mgmt'){ renderPlaylistMgmt(); }
   // Settings sub-pages
-  if(page==='parental-pin'){ resetPinPage(); }
-  if(page==='age-rating'){ renderAgeRating(); }
+  if(page==='parental-pin'){ renderPinPage(); }
   if(page==='language'){ renderLanguage(); }
   if(page==='settings'){ showSettingsSection(state.settingsSection || 'privacy'); }
   // Keep the leftmost rail highlight in sync: IPTV = Channels, Live TV = Program Guide
@@ -5616,6 +5786,11 @@ function go(page){
   if(page==='guide'){
     document.querySelectorAll('#page-guide .guide-global-item').forEach(el=>{
       el.classList.toggle('active', el.dataset.focusKey === 'guide-global-live');
+    });
+  }
+  if(page==='playlist-mgmt'){
+    document.querySelectorAll('#page-playlist-mgmt .ch-global-item').forEach(el=>{
+      el.classList.toggle('active', el.dataset.focusKey === 'ch-global-my');
     });
   }
 }
@@ -5673,7 +5848,10 @@ function rebuildFocusables(){
   if(page) list = Array.from(page.querySelectorAll('.focusable')).filter(el=>{
     // skip controls inside inactive settings sub-panels
     const p = el.closest('.st-panel');
-    return !p || p.classList.contains('on');
+    if(p && !p.classList.contains('on')) return false;
+    // skip elements hidden via display:none (e.g. inactive stage cards)
+    if(el.getClientRects().length === 0) return false;
+    return true;
   });
   // include any open popup so its buttons are clickable
   document.querySelectorAll('.popup-backdrop.open .focusable').forEach(el=>{
@@ -5838,6 +6016,9 @@ function handleActivate(el){
   const key = el.dataset.focusKey;
   if(!key) return;
 
+  // Generic: any focusable carrying data-close-popup dismisses that popup
+  if(el.dataset.closePopup){ closePopup(el.dataset.closePopup); return; }
+
   // Toggles: pressing OK toggles
   if(el.classList.contains('toggle')){
     el.classList.toggle('on');
@@ -5922,9 +6103,10 @@ function handleActivate(el){
       go('home'); return;
     case 'm3u-next':
       if(!validateM3U()) return;
-      // Populate the processed page from the M3U URL, then advance
-      renderProcessedFromM3U();
-      go('m3u-processed'); return;
+      // M3U flow: enter URL → Next → loading (analyzing) → "Playlist is processed" page
+      showLoadingPage(()=>{ renderProcessedFromM3U(); go('m3u-processed'); },
+        {text:'Playlist is analyzing...', sub:'Reading channels and building the program guide'});
+      return;
     case 'm3u-back':
       go('type'); return;
     case 'm3u-qr':
@@ -5934,25 +6116,20 @@ function handleActivate(el){
     case 'm3u-local':
       openFilePicker(); return;
     case 'mp-next':
-      go('epg-config'); return;
+      finalizeEpgConfig();
+      state.pmUseLoader = false;
+      // M3U flow: "Playlist is processed" → Next → playlist management → click a playlist → channels (no loading between)
+      go('playlist-mgmt');
+      return;
     case 'mp-back':
       go('m3u'); return;
     case 'mp-toggle-tv':
       selectMpToggle('tv'); return;
     case 'mp-toggle-vod':
       selectMpToggle('vod'); return;
-    case 'epg-done':
-      // Save EPG URL + playlist type then jump to playlist management
-      finalizeEpgConfig();
-      state.pmUseLoader = true; go('playlist-mgmt'); return;
-    case 'epg-back':
-      go('m3u-processed'); return;
-    case 'epg-input':
-      // Click on input card focuses the visible value (mock — no real editor)
-      showToast('EPG URL editor — coming soon');
+    case 'mp-epg-input':
+      // editing handled by the TV keyboard (auto-opens when the input is focused)
       return;
-    case 'epg-paste':
-      doPasteFromClipboard('epgInputValue'); return;
     case 'xc-next':
       if(!validateXC()) return;
       go('success'); return;
@@ -5985,7 +6162,7 @@ function handleActivate(el){
     case 'ai-chip-news':
     case 'ai-chip-movies':
     case 'ai-chip-musics':
-      selectAiChip(el.dataset.cat); return;
+      selectAiChip(el.dataset.cat); askAi(); return;
     case 'ai-ask':
       askAi(); return;
     case 'ai-cat-back':
@@ -5999,7 +6176,8 @@ function handleActivate(el){
       return;
     case 'addm3u-add':
       closePopup('addM3UModal');
-      state.pmUseLoader = true; go('playlist-mgmt'); return;
+      state.pmUseLoader = true;
+      go('playlist-mgmt'); return;
     case 'cd-back':
       go('channels'); return;
     case 'cd-watch':
@@ -6030,6 +6208,14 @@ function handleActivate(el){
       state.pmUseLoader = false; go('playlist-mgmt'); return;
     case 'ch-global-settings':
       go('settings'); return;
+
+    /* ----- Global app rail on Playlist Management page ----- */
+    case 'pm-global-toggle':{
+      const pmPage = document.getElementById('page-playlist-mgmt');
+      pmPage.classList.toggle('pm-rail-collapsed');
+      rebuildFocusables(); updateFocus();
+      return;
+    }
 
     /* ----- Global app rail on Guide page ----- */
     case 'guide-global-toggle':{
@@ -6128,6 +6314,8 @@ function handleActivate(el){
     /* ----- Settings page ----- */
     case 'settings-parental':
       openPinPage('parental'); return;
+    case 'pin-changepw':
+      startChangePin(); return;
     case 'settings-language':
       showSettingsSection('language'); return;
     case 'settings-about':
@@ -6237,13 +6425,15 @@ function handleActivate(el){
     go('channel-detail');
     return;
   }
+  if(/^pm-edit-/.test(key)){ renamePlaylist(key); return; }
   /* --- My Playlist rows: show analyzing loader, then open the channels page --- */
   if(/^pm-row-/.test(key)){
-    if(state.pmUseLoader){ showPlaylistLoader(()=>go('channels')); }
+    if(state.pmUseLoader){ showLoadingPage(()=>go('channels'), {text:'Adding your playlist...', sub:'Preparing channels and program guide'}); }
     else { go('channels'); }
     return;
   }
   if(/^pm-delete-/.test(key)){ deletePlaylist(key); return; }
+  if(key === 'rename-save'){ saveRenamePlaylist(); return; }
   /* Favorites popup lists — items handled by global delegation. */
   if(/^fav-/.test(key)) return;
 
@@ -6255,7 +6445,8 @@ function handleActivate(el){
 
   /* --- Age rating list selection --- */
   if(/^age-select-/.test(key)){
-    selectAgeRating(parseInt(key.replace('age-select-',''),10));
+    const v = key.replace('age-select-','');
+    selectAgeRating(v === 'null' ? 'null' : parseInt(v,10));
     return;
   }
 }
@@ -6278,7 +6469,7 @@ function handleBack(){
     case 'm3u': case 'xc': case 'stalker': go('type'); break;
     case 'success': go('home'); break;
     case 'm3u-processed': go('m3u'); break;
-    case 'epg-config': go('m3u-processed'); break;
+    case 'loading': return;   // ignore back while the analyzing page is running
     case 'guide': go('home'); break;
     case 'player': go(state.prevPage || 'guide'); break;
     case 'favorites': go('guide'); break;
@@ -6532,7 +6723,6 @@ fpOverlay.addEventListener('mouseover', e=>{
 const phoneOverlay = document.getElementById('phoneOverlay');
 const phoneUrl = document.getElementById('phoneUrl');
 const phoneStatus = document.getElementById('phoneStatus');
-const phoneSend = document.getElementById('phoneSend');
 let state_phone_simulatedConnected = false;
 
 function togglePhone(force){
@@ -6549,7 +6739,6 @@ function togglePhone(force){
         state.phone.connected = true;
         phoneStatus.style.color = '#188038';
         phoneStatus.textContent = `✓ Connected to: Living Room TV (${state.room.code})`;
-        phoneSend.disabled = false;
       },1400);
     }
   }
@@ -6723,6 +6912,102 @@ const CHANNELS = [
       {h:12, hh:16, slots:8, title:'Call The Midwife - SOS sages-femmes', desc:'Call The Midwife - SOS sages-femmes — série britannique en direct.'},
       {h:16, hh:20, slots:8, title:'Peaky Blinders', desc:'Peaky Blinders — série britannique en direct.'},
       {h:20, hh:24, slots:8, title:'BBC Late Night', desc:'BBC Late Night — série britannique en direct.'}
+    ]},
+  { id:'mtv',    num:160, name:'MTV Hits',              short:'MTV',  cat:'music', genre:'music', age:'+12',
+    logoClass:'purple', live:false,
+    desc:"MTV Hits brings non-stop music videos, chart-toppers and exclusive artist sessions — from pop and hip-hop to electronic and rock, curated for round-the-clock listening. The channel flows between fresh releases, classic anthems and themed blocks, keeping the energy high from morning drive to late-night throwbacks. It is a pure music destination for anyone who wants the soundtrack on without lifting a remote.",
+    tags:['Music','Entertainment'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Morning Beats', desc:'Wake up with the freshest pop and dance hits.'},
+      {h:4,  hh:8,  slots:4, title:'Chart Toppers', desc:'The biggest singles climbing the charts right now.'},
+      {h:8,  hh:12, slots:4, title:'Hip-Hop Flow', desc:'Back-to-back rap and R&B videos from today’s headliners.'},
+      {h:12, hh:16, slots:4, title:'MTV Studio', desc:'Live artist sessions and intimate acoustic performances.'},
+      {h:16, hh:20, slots:4, title:'Electronic Drive', desc:'House, techno and EDM to power your evening.'},
+      {h:20, hh:24, slots:4, title:'MTV Late', desc:'Late-night classics and throwback anthems.'}
+    ]},
+  { id:'anime1',  num:165, name:'Crunchy Anime',          short:'ANI',  cat:'anime', genre:'anime', age:'+12',
+    logoClass:'cyan', live:false,
+    desc:"Crunchy Anime is your round-the-clock home for Japanese animation — simulcasts straight from Tokyo, beloved classics and exclusive film premieres. The schedule blends shonen action, heartfelt slice-of-life and late-night seinen, with dub and sub blocks scheduled back to back so fans never wait. It is built for binge sessions and weekly drops alike, keeping the fandom connected from morning premieres to midnight marathons.",
+    tags:['Anime','Animation'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Midnight Anime', desc:'Late-night simulcasts and fan-favorite encores.'},
+      {h:4,  hh:8,  slots:4, title:'Shonen Morning', desc:'High-energy action premieres to start the day.'},
+      {h:8,  hh:12, slots:4, title:'Dub Block', desc:'Back-to-back English dubs of the season’s hits.'},
+      {h:12, hh:16, slots:4, title:'Classic Rewind', desc:'Timeless series and beloved films from the vault.'},
+      {h:16, hh:20, slots:4, title:'Seinen Prime', desc:'Mature late-afternoon storytelling for grown-up fans.'},
+      {h:20, hh:24, slots:4, title:'Simulcast Night', desc:'Fresh episodes dropping the moment they air in Japan.'}
+    ]},
+  { id:'doc1',    num:170, name:'DocuWorld',             short:'DOC',  cat:'documentary', genre:'documentary', age:'',
+    logoClass:'green', live:false,
+    desc:"DocuWorld delivers premium factual storytelling — nature epics, history deep-dives, science explainers and true-crime investigations — produced with cinema-grade visuals and rigorous research. Each block is curated around a theme so viewers can journey through a subject from dawn to dusk, whether it is the depths of the ocean, the edge of the cosmos or the turning points of the 20th century. It is thoughtful television that rewards curiosity.",
+    tags:['Documentary','Knowledge'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Nature Walks', desc:'Slow television from the wild — oceans, forests and skies.'},
+      {h:4,  hh:8,  slots:4, title:'History Hour', desc:'Deep dives into the moments that shaped the modern world.'},
+      {h:8,  hh:12, slots:4, title:'Science Today', desc:'Frontier research explained with clarity and wonder.'},
+      {h:12, hh:16, slots:4, title:'Planet Earth', desc:'Sweeping natural-history cinematography in 4K.'},
+      {h:16, hh:20, slots:4, title:'True Crime Files', desc:'Meticulous investigations into real cases.'},
+      {h:20, hh:24, slots:4, title:'Cosmos Late', desc:'Late-night journeys through space and time.'}
+    ]},
+  { id:'music2',  num:175, name:'Hit Music TV',          short:'HIT',  cat:'music', age:'+12',
+    logoClass:'red', live:false,
+    desc:"Hit Music TV is a 24/7 rotation of the biggest videos and breaking hits — pop, hip-hop, EDM and rock — stitched together with artist spotlights, countdown specials and live festival replays. The channel is built to keep the energy up all day, from the school-run morning mix to the Saturday-night party block, so there is always a track worth turning up.",
+    tags:['Music','Hits'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Overnight Hits', desc:'The playlist that never sleeps — charts on repeat.'},
+      {h:4,  hh:8,  slots:4, title:'Morning Mix', desc:'Bright pop to wake up the house.'},
+      {h:8,  hh:12, slots:4, title:'Hip-Hop Hotlist', desc:'The hottest rap and R&B of the week.'},
+      {h:12, hh:16, slots:4, title:'Festival Replay', desc:'Full sets and highlights from live shows.'},
+      {h:16, hh:20, slots:4, title:'EDM Energy', desc:'Drop after drop to power the evening.'},
+      {h:20, hh:24, slots:4, title:'Saturday Night', desc:'The weekend party block, commercial-free.'}
+    ]},
+  { id:'kids1',   num:180, name:'Kids Cartoon TV',        short:'KID',  cat:'kids', genre:'kids', age:'',
+    logoClass:'yellow', live:false,
+    desc:"Kids Cartoon TV is a safe, commercial-free world of animated adventures, sing-alongs and gentle learning shows for the whole family. The day flows from bright morning cartoons to cozy bedtime stories, with characters that grow alongside their viewers. Every block is rated for young audiences and built to keep little ones entertained while parents relax.",
+    tags:['Kids','Animation'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Sleepy Toons', desc:'Calm cartoons to ease into the night.'},
+      {h:4,  hh:8,  slots:4, title:'Rise and Shine', desc:'Energetic morning adventures to start the day.'},
+      {h:8,  hh:12, slots:4, title:'Sing-Along Hour', desc:'Songs and rhymes for the whole family.'},
+      {h:12, hh:16, slots:4, title:'Friends Club', desc:'Stories about friendship, sharing and kindness.'},
+      {h:16, hh:20, slots:4, title:'Adventure Time', desc:'Brave little heroes on big quests.'},
+      {h:20, hh:24, slots:4, title:'Bedtime Tales', desc:'Gentle tales to wind down before sleep.'}
+    ]},
+  { id:'gs1',     num:185, name:'Game Show Central',      short:'GS',   cat:'gameshow', genre:'gameshow', age:'',
+    logoClass:'blue', live:false,
+    desc:"Game Show Central is wall-to-wall competition — quizzes, trivia showdowns, physical challenges and big-money finals — hosted with the energy of a live studio audience. The schedule stacks fan-favorite formats back to back so there is always a new round to play along with, from breakfast brain-teasers to prime-time spectaculars.",
+    tags:['Game show','Entertainment'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Late Night Quiz', desc:'Quick-fire trivia for night owls.'},
+      {h:4,  hh:8,  slots:4, title:'Brain Busters', desc:'Morning puzzles to wake up the mind.'},
+      {h:8,  hh:12, slots:4, title:'Family Feud Hour', desc:'Classic survey games with the whole family.'},
+      {h:12, hh:16, slots:4, title:'Quiz Masters', desc:'Champions battle for the daily crown.'},
+      {h:16, hh:20, slots:4, title:'Physical Challenge', desc:'Stunts, obstacles and laugh-out-loud rounds.'},
+      {h:20, hh:24, slots:4, title:'Prime Time Final', desc:'The big-money finale under the lights.'}
+    ]},
+  { id:'hist1',   num:190, name:'History Channel',        short:'HIS',  cat:'history', genre:'history', age:'',
+    logoClass:'green', live:false,
+    desc:"History Channel brings the past to life with landmark documentaries, battlefield reconstructions, ancient-civilization deep dives and the stories of the people who shaped the world. Each block travels a different era, from the first empires to the modern age, with maps, artifacts and expert narration that make history feel immediate.",
+    tags:['History','Documentary'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Lost Worlds', desc:'Forgotten civilizations and buried cities.'},
+      {h:4,  hh:8,  slots:4, title:'Dawn of Empires', desc:'How the first great societies rose.'},
+      {h:8,  hh:12, slots:4, title:'Battlefields', desc:'Reconstructed campaigns from the ancient world.'},
+      {h:12, hh:16, slots:4, title:'Age of Discovery', desc:'Explorers, maps and new horizons.'},
+      {h:16, hh:20, slots:4, title:'World at War', desc:'The conflicts that redrew the map.'},
+      {h:20, hh:24, slots:4, title:'Modern Times', desc:'The 20th century and the world we inherited.'}
+    ]},
+  { id:'hor1',    num:195, name:'Horror Night TV',        short:'HOR',  cat:'horror', genre:'horror', age:'+16',
+    logoClass:'red', live:false,
+    desc:"Horror Night TV is a 24-hour scare stream — supernatural thrillers, creature features, psychological chillers and cult classics — programmed to keep the lights off. The night builds from dusk dread to after-midnight marathons, with themed weeks and director spotlights for the truly committed. Not for the faint of heart.",
+    tags:['Horror','Sci-Fi'], lockCount:0,
+    programs:[
+      {h:0,  hh:4,  slots:4, title:'Midnight Scream', desc:'Late-night frights to end the day.'},
+      {h:4,  hh:8,  slots:4, title:'Creature Feature', desc:'Monsters, mutants and things from the deep.'},
+      {h:8,  hh:12, slots:4, title:'Paranormal Hour', desc:'Hauntings, ghosts and unexplained phenomena.'},
+      {h:12, hh:16, slots:4, title:'Slasher Cinema', desc:'Iconic killers and final-girl showdowns.'},
+      {h:16, hh:20, slots:4, title:'Sci-Fi Terror', desc:'When science goes horribly wrong.'},
+      {h:20, hh:24, slots:4, title:'Horror Marathon', desc:'Back-to-back classics until dawn.'}
     ]}
 ];
 /* ---- Content-genre taxonomy (sidebar "Genres" filters) ---- */
@@ -6812,7 +7097,7 @@ function renderTimeGridHeader(){
    we use 48 grid columns inside .tg-cells so the playhead can
    be %-positioned against this width.
    ============================================================ */
-function buildTgRow(ch){
+function buildTgRow(ch, showNum){
   const row = document.createElement('div');
   row.className = 'tg-row focusable focusable-guide' + (ch.id===currentChannelId ? ' selected' : '');
   row.dataset.focusKey = 'guide-row-' + ch.id;
@@ -6822,8 +7107,8 @@ function buildTgRow(ch){
   const id = document.createElement('div');
   id.className = 'tg-id';
   id.innerHTML =
-    `<span class="tg-num">${ch.num}</span>
-     <span class="tg-logo ${ch.logoClass||''}">${ch.short}</span>
+    (showNum === false ? '' : `<span class="tg-num">${ch.num}</span>`) +
+    `<span class="tg-logo ${ch.logoClass||''}">${ch.short}</span>
      <span class="tg-name">${ch.name}</span>`;
 
   const cells = document.createElement('div');
@@ -6909,8 +7194,13 @@ function renderTimeGridRows(){
   }
 
   visibleChannels.forEach(ch=>{
-    const row = buildTgRow(ch);
-    wraps.forEach(w => w.appendChild(row.cloneNode(true)));
+    // Live TV (Program Guide) drops the channel number; Favorites keeps it
+    const rowWithNum    = buildTgRow(ch, true);
+    const rowWithoutNum = buildTgRow(ch, false);
+    wraps.forEach(w => {
+      const src = (w.id === 'timeGridRows') ? rowWithoutNum : rowWithNum;
+      w.appendChild(src.cloneNode(true));
+    });
   });
   // re-bind focusables (rows added with focus class need registration)
   rebuildFocusables();
@@ -7401,32 +7691,30 @@ phoneOverlay.addEventListener('click', e=>{
   if(e.target===phoneOverlay || e.target.closest('.phone-close-hint')){ togglePhone(false); return; }
 });
 
-phoneSend.addEventListener('click', ()=>{
-  const v = (phoneUrl.value||'').trim();
-  if(!v){ phoneStatus.style.color = '#d93025'; phoneStatus.textContent='⚠️ Please enter a valid URL.'; return; }
-  // success
-  state.phone.urlReceived = true;
-  state.phone.receivedUrl = v;
-  phoneStatus.style.color = '#188038';
-  phoneStatus.innerHTML='✓ 发送成功 ✓<br/><span style="font-size:11px">URL pushed to TV</span>';
-  phoneSend.disabled = true; phoneSend.textContent='发送成功 ✓';
-
-  // Update TV side
-  const tv = document.getElementById('qrStatus');
-  tv.className = 'status-line received';
-  document.getElementById('qrStatusText').textContent = '✓ URL received! Click Next to continue.';
-
-  setTimeout(()=>{ togglePhone(false); }, 900);
-});
 document.getElementById('phonePaste').addEventListener('click', async ()=>{
-  try{
-    const text = await navigator.clipboard.readText();
-    phoneUrl.value = text;
-    phoneStatus.style.color = '#188038';
-    phoneStatus.textContent = `✓ Pasted from clipboard.`;
-  }catch(_){
-    phoneUrl.value = 'https://iptv-org.github.io/iptv/index.m3u';
-  }
+  // "Paste" — take the URL from the clipboard (fallback to the field value / a demo URL)
+  // and paste it straight into the M3U URL input on the TV page.
+  let text = '';
+  try{ text = (await navigator.clipboard.readText()) || ''; }catch(_){}
+  if(!text) text = (phoneUrl.value||'').trim();
+  if(!text){ phoneStatus.style.color = '#d93025'; phoneStatus.textContent='⚠️ Please enter a valid URL.'; return; }
+
+  phoneUrl.value = text;
+  phoneStatus.style.color = '#188038';
+  phoneStatus.textContent = '✓ Pasted.';
+
+  // Paste into the M3U URL field on the TV side
+  const tvInput = document.getElementById('m3uUrl');
+  if(tvInput) tvInput.value = text;
+  state.config.url = text;
+
+  // Reflect the received URL on the TV page status line
+  const tv = document.getElementById('qrStatus');
+  if(tv) tv.className = 'status-line received';
+  const tvText = document.getElementById('qrStatusText');
+  if(tvText) tvText.textContent = '✓ URL received! Click Next to continue.';
+
+  setTimeout(()=>{ togglePhone(false); }, 700);
 });
 document.getElementById('phoneRec').addEventListener('click', ()=>{
   phoneUrl.value = 'https://iptv-org.github.io/iptv/index.m3u';
@@ -7490,10 +7778,10 @@ function selectMpToggle(which, rebuildFocus){
 
 
 function finalizeEpgConfig(){
-  // Capture whatever the card currently shows so it survives a back/forward round-trip
-  const el = document.getElementById('epgInputValue');
-  if(el && el.textContent.trim()){
-    state.epg.url = el.textContent.trim();
+  // Capture whatever the processed-page input currently shows so it survives a back/forward round-trip
+  const el = document.getElementById('mpEpgValue');
+  if(el && el.value.trim()){
+    state.epg.url = el.value.trim();
   }
   // Save a high-level summary the channels page can read if it ever needs to.
   state.processed.mode = state.processed.mode || 'tv';
@@ -7519,6 +7807,34 @@ function addPlaylistToCollection(p){
 /* Minimal HTML-escape for playlist names */
 function escapeHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* Full-screen analyzing page: navigate to #page-loading, animate 0→100%, then run cb.
+   Used as an intermediate step in the search (AI add) and M3U import flows. */
+let __loadingTimer = null;
+function showLoadingPage(onComplete, opts){
+  opts = opts || {};
+  const page  = document.getElementById('page-loading');
+  const pctEl = document.getElementById('ldPct');
+  const txtEl = document.getElementById('ldText');
+  const subEl = document.getElementById('ldSub');
+  if(txtEl) txtEl.textContent = opts.text || 'Playlist is analyzing...';
+  if(subEl) subEl.textContent = opts.sub  || 'Loading channels and program guide';
+  if(__loadingTimer){ clearInterval(__loadingTimer); __loadingTimer = null; }
+  let pct = 0;
+  if(pctEl) pctEl.textContent = '0%';
+  if(page)  page.style.setProperty('--ld-pct','0%');
+  go('loading');
+  __loadingTimer = setInterval(()=>{
+    pct += Math.floor(4 + Math.random()*10);
+    if(pct > 100) pct = 100;
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(page)  page.style.setProperty('--ld-pct', pct + '%');
+    if(pct === 100){
+      clearInterval(__loadingTimer); __loadingTimer = null;
+      setTimeout(()=>{ if(onComplete) onComplete(); }, 420);
+    }
+  }, 80);
 }
 
 /* Show a white analyzing loader on the playlist-management screen, then run cb */
@@ -7564,6 +7880,12 @@ function renderPlaylistMgmt(){
         '<div class="pm-row-ch">'+escapeHtml(p.url||'')+(p.channels?('  ·  '+(p.channels)+' channels'):'')+'</div>'+
       '</div>'+
       '<div class="pm-row-actions">'+
+        '<div class="pm-row-action pm-row-edit focusable" data-focus-key="pm-edit-'+i+'" title="Rename">'+
+          '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+            '<path d="M12 20h9"/>'+
+            '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>'+
+          '</svg>'+
+        '</div>'+
         '<div class="pm-row-action pm-row-delete focusable" data-focus-key="pm-delete-'+i+'" title="Delete">'+
           '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
             '<path d="M3 6h18"/>'+
@@ -7588,24 +7910,108 @@ function deletePlaylist(key){
   showToast('Removed: ' + (removed.name||'playlist'));
 }
 
+/* Rename a playlist: open the rename popup with the current name pre-filled */
+let renameIndex = -1;
+function renamePlaylist(key){
+  const i = parseInt(key.slice('pm-edit-'.length),10);
+  const p = state.playlists && state.playlists[i];
+  if(!p) return;
+  renameIndex = i;
+  const inp = document.getElementById('renamePlaylistInput');
+  if(inp) inp.value = p.name || '';
+  openPopup('renamePlaylistModal');
+  if(inp) setTimeout(()=>{ inp.focus(); inp.select(); }, 60);
+}
+function saveRenamePlaylist(){
+  const inp = document.getElementById('renamePlaylistInput');
+  if(!inp || renameIndex < 0 || !state.playlists || !state.playlists[renameIndex]) return;
+  const v = (inp.value || '').trim();
+  if(!v){ showToast('Name cannot be empty'); return; }
+  state.playlists[renameIndex].name = v;
+  const done = v;
+  renameIndex = -1;
+  closePopup('renamePlaylistModal');
+  renderPlaylistMgmt();
+  showToast('Renamed to: ' + done);
+}
+
 /* ============================================================
    SETTINGS — Parental control, Language, About, Contact
    ============================================================ */
-const PIN_CODE = '1234';
+let storedPin = null;      // null = not set yet; first-time entry sets it
 let currentPin = '';
+let pinView = 'set';       // 'set' | 'login' | 'change' | 'unlocked'
+let pinStep = 'new';       // set/change: 'new' | 'confirm'; change starts at 'verify'
+let pendingPin = '';
+let pinJustSet = false;
 
 function openPinPage(mode){
-  state.pinMode = mode;
-  currentPin = '';
+  state.pinMode = mode;    // 'parental' | 'unlock'
+  currentPin = ''; pendingPin = ''; pinJustSet = false;
+  if(mode === 'unlock'){
+    pinView = storedPin ? 'login' : 'set';
+    pinStep = 'new';
+  } else if(!storedPin){
+    pinView = 'set'; pinStep = 'new';
+  } else {
+    pinView = 'login'; pinStep = 'login';
+  }
   go('parental-pin');
 }
-function resetPinPage(){
+function renderPinPage(){
+  const unlocked = (pinView === 'unlocked');
+  const pinCard = document.getElementById('pinCard');
+  const parentalCard = document.getElementById('parentalCard');
+  if(pinCard) pinCard.style.display = unlocked ? 'none' : '';
+  if(parentalCard) parentalCard.style.display = unlocked ? '' : 'none';
+  const chgBtn = document.getElementById('pinChangePwBtn');
+  if(chgBtn) chgBtn.style.display = (pinView === 'login') ? '' : 'none';
   currentPin = '';
   renderPinDots();
+  renderPinHeader();
   const err = document.getElementById('pinError');
-  if(err) err.classList.remove('show');
+  if(err){ err.classList.remove('show'); err.textContent = 'Incorrect PIN'; }
   const dots = document.getElementById('pinDots');
   if(dots) dots.classList.remove('error');
+  if(unlocked) renderAgeRating();
+  rebuildFocusables(); updateFocus();
+}
+function startChangePin(){
+  pinView = 'change';
+  pinStep = 'verify';
+  currentPin = ''; pendingPin = '';
+  renderPinPage();
+}
+function renderPinHeader(){
+  const titleEl = document.querySelector('#page-parental-pin .page-title');
+  const subEl = document.getElementById('pinSubtitle');
+  if(!titleEl || !subEl) return;
+  titleEl.textContent = 'Parental Control';
+  let sub = 'Enter your 4-digit PIN';
+  if(pinView === 'set'){
+    sub = (pinStep === 'new') ? 'Set a 4-digit PIN' : 'Re-enter your PIN to confirm';
+  } else if(pinView === 'login'){
+    sub = pinJustSet ? 'Enter your new PIN to log in' : 'Enter your 4-digit PIN';
+  } else if(pinView === 'change'){
+    if(pinStep === 'verify') sub = 'Enter your current PIN';
+    else if(pinStep === 'new') sub = 'Enter a new 4-digit PIN';
+    else sub = 'Re-enter your new PIN to confirm';
+  }
+  subEl.textContent = sub;
+}
+function showPinError(msg){
+  const err = document.getElementById('pinError');
+  const dots = document.getElementById('pinDots');
+  if(err){ err.textContent = msg || 'Incorrect PIN'; err.classList.add('show'); }
+  if(dots) dots.classList.add('error');
+  // Clear the input immediately so the next keypress is accepted right away
+  currentPin = '';
+  renderPinDots();
+  setTimeout(()=>{
+    renderPinDots();
+    if(dots) dots.classList.remove('error');
+    if(err) err.classList.remove('show');
+  }, 600);
 }
 function renderPinDots(){
   const dots = document.getElementById('pinDots');
@@ -7634,44 +8040,108 @@ function pinCancel(){
   if(state.pinMode === 'unlock') go('guide');
   else go('settings');
 }
+function unlockProgram(){
+  state.lockedProgs.delete(state.lockedProgKeyToUnlock || LOCKED_PROG_KEY);
+  state.lockedProgKeyToUnlock = null;
+  showToast('Program unlocked');
+  go('guide');
+}
 function pinSubmit(){
-  const err = document.getElementById('pinError');
-  const dots = document.getElementById('pinDots');
-  if(currentPin !== PIN_CODE){
-    if(err) err.classList.add('show');
-    if(dots) dots.classList.add('error');
-    setTimeout(()=>{
+  if(currentPin.length < 4) return;
+  // ---- First-time SET PIN ----
+  if(pinView === 'set'){
+    if(pinStep === 'new'){
+      pendingPin = currentPin;
+      pinStep = 'confirm';
       currentPin = '';
-      renderPinDots();
-      if(dots) dots.classList.remove('error');
-      if(err) err.classList.remove('show');
-    }, 600);
+      renderPinDots(); renderPinHeader();
+      return;
+    }
+    if(currentPin === pendingPin){
+      storedPin = currentPin;
+      showToast('PIN set');
+      if(state.pinMode === 'unlock'){ unlockProgram(); return; }
+      // Require log-in with the new PIN
+      pinView = 'login'; pinStep = 'login'; pinJustSet = true;
+      currentPin = ''; pendingPin = '';
+      renderPinPage();
+    } else {
+      showPinError('PINs do not match');
+      pinStep = 'new'; pendingPin = ''; currentPin = '';
+      renderPinDots(); renderPinHeader();
+    }
     return;
   }
-  if(err) err.classList.remove('show');
-  if(state.pinMode === 'parental'){
-    go('age-rating');
-  } else if(state.pinMode === 'unlock'){
-    state.lockedProgs.delete(state.lockedProgKeyToUnlock || LOCKED_PROG_KEY);
-    state.lockedProgKeyToUnlock = null;
-    showToast('Program unlocked');
-    go('guide');
+  // ---- CHANGE PIN: verify old -> new -> confirm ----
+  if(pinView === 'change'){
+    if(pinStep === 'verify'){
+      if(currentPin === storedPin){
+        pinStep = 'new'; currentPin = ''; renderPinDots(); renderPinHeader();
+      } else {
+        showPinError('Incorrect PIN');
+      }
+      return;
+    }
+    if(pinStep === 'new'){
+      pendingPin = currentPin;
+      pinStep = 'confirm';
+      currentPin = '';
+      renderPinDots(); renderPinHeader();
+      return;
+    }
+    if(currentPin === pendingPin){
+      storedPin = currentPin;
+      showToast('PIN changed');
+      pinView = 'unlocked'; pinStep = 'login'; pinJustSet = false;
+      currentPin = ''; pendingPin = '';
+      renderPinPage();
+    } else {
+      showPinError('PINs do not match');
+      pinStep = 'new'; pendingPin = ''; currentPin = '';
+      renderPinDots(); renderPinHeader();
+    }
+    return;
   }
+  // ---- LOGIN (verify) ----
+  if(currentPin !== storedPin){
+    showPinError('Incorrect PIN');
+    return;
+  }
+  const err = document.getElementById('pinError');
+  if(err) err.classList.remove('show');
+  if(state.pinMode === 'unlock'){ unlockProgram(); return; }
+  pinView = 'unlocked'; pinStep = 'login'; pinJustSet = false;
+  currentPin = ''; pendingPin = '';
+  renderPinPage();
 }
 
 function renderAgeRating(){
   const list = document.getElementById('ageList');
   if(!list) return;
-  list.innerHTML = Array.from({length:15},(_,i)=>{
+  const nullSel = state.parentalAge === 'null' ? ' selected' : '';
+  let html = '<div class="focusable age-row'+nullSel+'" data-focus-key="age-select-null"><span class="age-radio"></span><span>None</span></div>';
+  html += Array.from({length:15},(_,i)=>{
     const age = i + 4;
     const sel = state.parentalAge === age ? ' selected' : '';
     return '<div class="focusable age-row'+sel+'" data-focus-key="age-select-'+age+'"><span class="age-radio"></span><span>'+age+'</span></div>';
   }).join('');
+  list.innerHTML = html;
 }
 function selectAgeRating(age){
+  if(age === 'null'){
+    // null = no restriction -> no lock
+    state.parentalAge = 'null';
+    state.lockedProgs.delete(LOCKED_PROG_KEY);
+    renderAgeRating();
+    rebuildFocusables(); updateFocus();
+    showToast('No age restriction');
+    return;
+  }
+  // Any other age -> lock, then continue the previously designed lock flow
   state.parentalAge = age;
   renderAgeRating();
   rebuildFocusables(); updateFocus();
+  saveAgeRating();
 }
 function saveAgeRating(){
   state.lockedProgs.add(LOCKED_PROG_KEY);
@@ -7692,7 +8162,7 @@ function showSettingsSection(sec){
 }
 
 function renderLanguage(){
-  const langs = ['Spanish','Portuguese','English','Chinese','French'];
+  const langs = ['Spanish','Portuguese','English'];
   document.querySelectorAll('.js-lang-list').forEach(list=>{
     list.innerHTML = langs.map(l=>{
       const active = state.selectedLang === l ? ' active' : '';
@@ -7771,6 +8241,7 @@ function openTvKeyboard(input){
 function closeTvKeyboard(){
   const kb = document.getElementById('tvKeyboard');
   if(kb) kb.classList.remove('open');
+  if(vkActiveInput && vkActiveInput.id === 'mpEpgValue'){ state.epg.url = vkActiveInput.value.trim(); }
   vkActiveInput = null;
   vkShift = false;
   rebuildFocusables();
@@ -7838,6 +8309,8 @@ function handleVirtualKey(code){
     const newVal = input.value || '';
     preview.textContent = input.type === 'password' ? '•'.repeat(newVal.length) : newVal;
   }
+  // Persist EPG URL edits immediately as the user types on the virtual keyboard
+  if(input.id === 'mpEpgValue'){ state.epg.url = input.value.trim(); }
 }
 
 // Open keyboard when any input/textarea gets focus
@@ -7869,7 +8342,7 @@ window.addEventListener('load', ()=>{
   const parts = rawHash.split('/');
   const hash = parts[0];
   const hashArg = parts[1];
-  const allowed = ['splash','terms','home','type','m3u','xc','stalker','success','m3u-processed','epg-config','guide','favorites','player','ai-home','ai-category','playlist-mgmt','channels','channel-detail'];
+  const allowed = ['splash','terms','home','type','m3u','xc','stalker','success','m3u-processed','guide','favorites','player','ai-home','ai-category','playlist-mgmt','channels','channel-detail'];
   const shouldAutoAdvance = !(allowed.includes(hash) && hash && hash !== 'splash');
 
   if(allowed.includes(hash) && hash && hash !== 'splash'){
@@ -7902,6 +8375,12 @@ window.addEventListener('load', ()=>{
 
   rebuildFocusables();
   updateFocus();
+
+  // Persist edits to the EPG URL field on the processed page
+  const mpEpgInput = document.getElementById('mpEpgValue');
+  if(mpEpgInput){
+    mpEpgInput.addEventListener('input', ()=>{ state.epg.url = mpEpgInput.value.trim(); });
+  }
 
   // tick clock
   const t = document.getElementById('timeClock');
