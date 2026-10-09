@@ -842,10 +842,8 @@ body{
   outline:none;
   background:#fff;color:#111;
 }
-#page-ai-category .ai-play-card-desc{
-  font-size:20px;color:rgba(255,255,255,.95);line-height:1.42;
-  margin-top:8px;
-}
+#page-ai-category .ai-play-card + .ai-play-card{margin-top:16px;}
+#page-ai-category .ai-play-card-alt .ai-play-card-top{align-items:center;}
 #page-ai-category .ai-play-card-url{
   font-size:18px;color:#ffc857;text-decoration:underline;
   text-underline-offset:3px;word-break:break-all;
@@ -867,6 +865,60 @@ body{
 }
 #page-ai-category .back-key-inline{
   position:absolute;top:32px;left:32px;z-index:5;
+}
+
+/* ----- ai-category intro sequence: category pill → loading dots → content ----- */
+#page-ai-category .ai-cat-loader{
+  position:absolute;left:96px;top:46%;
+  display:flex;align-items:center;gap:14px;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+#page-ai-category .ai-cat-loader span{
+  width:16px;height:16px;border-radius:50%;
+  background:#ffc857;
+  box-shadow:0 0 14px rgba(255,200,87,.45);
+  animation:aiDotPulse 1.15s ease-in-out infinite;
+}
+#page-ai-category .ai-cat-loader span:nth-child(2){animation-delay:.16s}
+#page-ai-category .ai-cat-loader span:nth-child(3){animation-delay:.32s}
+@keyframes aiDotPulse{
+  0%,100%{opacity:.22;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1)}
+}
+/* pill shows up first, then the dots join in */
+#page-ai-category.active .ai-play-card-bubble{
+  animation:aiBubbleIn .34s cubic-bezier(.22,.61,.36,1) both;
+}
+@keyframes aiBubbleIn{
+  from{opacity:0;transform:translateY(-10px) scale(.9)}
+  to{opacity:1;transform:none}
+}
+/* while loading: only pill + dots are on screen */
+#page-ai-category.ai-cat-loading .ai-cat-desc,
+#page-ai-category.ai-cat-loading .ai-play-card,
+#page-ai-category.ai-cat-loading .ai-cat-disclaimer,
+#page-ai-category.ai-cat-loading .ai-cat-bottom{
+  opacity:0;pointer-events:none;
+}
+#page-ai-category.ai-cat-loading .ai-cat-loader{
+  opacity:1;
+  transition-delay:.34s;
+}
+/* then the concrete content fades in */
+#page-ai-category.ai-cat-reveal .ai-cat-desc,
+#page-ai-category.ai-cat-reveal .ai-play-card,
+#page-ai-category.ai-cat-reveal .ai-cat-disclaimer,
+#page-ai-category.ai-cat-reveal .ai-cat-bottom{
+  animation:aiCatFade .44s ease both;
+}
+#page-ai-category.ai-cat-reveal .ai-play-card{animation-delay:.06s}
+#page-ai-category.ai-cat-reveal .ai-play-card-alt{animation-delay:.1s}
+#page-ai-category.ai-cat-reveal .ai-cat-disclaimer{animation-delay:.16s}
+#page-ai-category.ai-cat-reveal .ai-cat-bottom{animation-delay:.22s}
+@keyframes aiCatFade{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
 }
 
 /* ----- #addM3UModal ----- */
@@ -934,6 +986,25 @@ body{
   outline:none;
 }
 .addm3u-card .addm3u-actions{gap:14px}
+/* Danger variant — used by the delete-playlist confirmation */
+.addm3u-card .addm3u-danger{
+  padding:16px 40px;border-radius:14px;
+  background:linear-gradient(135deg,#ff5f57,#d92b23);
+  color:#fff;font-size:24px;font-weight:700;
+  border:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  box-shadow:0 10px 28px rgba(217,43,35,.35);
+  transition:all .15s ease;
+}
+.addm3u-card .addm3u-danger:hover,
+.addm3u-card .addm3u-danger.focused{
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(217,43,35,.55);
+  background:linear-gradient(135deg,#ff7a73,#e5342b);color:#fff;
+  outline:none;
+}
+.addm3u-card .pm-confirm-msg{font-size:26px;color:rgba(255,255,255,.8);line-height:1.45}
+.addm3u-card .pm-confirm-msg b{color:#fff;font-weight:700}
+.addm3u-card .pm-confirm-warn{font-size:19px;color:rgba(255,130,120,.95)}
 
 /* ----- #page-ai-analyzing ----- */
 
@@ -1026,7 +1097,11 @@ body{
   display:flex;flex-direction:column;gap:14px;
   flex:1;
 }
+#page-playlist-mgmt .pm-item{
+  display:flex;align-items:center;gap:20px;
+}
 #page-playlist-mgmt .pm-row{
+  flex:1;
   display:flex;align-items:center;gap:24px;
   padding:22px 30px;
   border-radius:18px;
@@ -1085,6 +1160,37 @@ body{
   outline:none;
 }
 #page-playlist-mgmt .pm-empty{padding:48px 0;text-align:center;color:rgba(255,255,255,.42);font-size:22px;}
+/* Selected row → radio-style marker at the inner-right of the card:
+   a thin outlined circle with a filled centre dot (as in the reference),
+   rendered monochrome (white-on-black) to stay in the neutral glass palette.
+   The marker shows ONLY on the genuinely selected row (.selected),
+   never on a passive CSS :hover, so it reads as a selection indicator. */
+#page-playlist-mgmt .pm-row-ring{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;position:relative;
+  border:2.5px solid rgba(255,255,255,.95);
+  background:transparent;
+  box-shadow:0 0 14px rgba(255,255,255,.28);
+  opacity:0;transform:scale(.75);
+  transition:opacity .18s ease,transform .18s ease;
+  pointer-events:none;
+}
+#page-playlist-mgmt .pm-row-ring::after{
+  content:'';position:absolute;inset:9px;border-radius:50%;
+  background:#fff;
+  transform:scale(0);
+  transition:transform .2s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes pmRingPulse{
+  0%,100%{box-shadow:0 0 10px rgba(255,255,255,.22)}
+  50%{box-shadow:0 0 22px rgba(255,255,255,.5)}
+}
+#page-playlist-mgmt .pm-row.selected .pm-row-ring{
+  opacity:1;transform:scale(1);
+  animation:pmRingPulse 2.4s ease-in-out infinite;
+}
+#page-playlist-mgmt .pm-row.selected .pm-row-ring::after{
+  transform:scale(1);
+}
 
 /* ----- playlist management loader (white variant of TV analyzing spinner) ----- */
 #pmLoader{
@@ -2965,6 +3071,21 @@ body{
 .settings-ic{width:32px;display:flex;align-items:center;justify-content:center;font-size:24px}
 .settings-arrow{margin-left:auto;font-size:22px;color:rgba(255,255,255,.45)}
 .settings-row.focused .settings-arrow{color:#111}
+/* radio-style selection indicator (language) */
+.lang-radio{
+  width:26px;height:26px;border-radius:50%;box-sizing:border-box;
+  border:2.5px solid rgba(255,255,255,.32);
+  display:inline-block;position:relative;
+  transition:border-color .15s ease;
+}
+.lang-radio.on{border-color:#ffc857}
+.lang-radio.on::after{
+  content:'';position:absolute;inset:4px;border-radius:50%;
+  background:#ffc857;
+}
+.settings-row.focused .lang-radio{border-color:rgba(0,0,0,.28)}
+.settings-row.focused .lang-radio.on{border-color:#d99a1f}
+.settings-row.focused .lang-radio.on::after{background:#d99a1f}
 
 /* ----- PIN page ----- */
 #page-parental-pin{
@@ -4155,7 +4276,7 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="ai-back-circle focusable" data-focus-key="ai-back">‹</div>
       <div class="ai-title">Search</div>
       <div class="ai-search-row">
-        <input class="ai-search focusable" data-focus-key="ai-search" id="aiSearch" type="text" placeholder="Local TV Channels" />
+        <input class="ai-search focusable" data-focus-key="ai-search" id="aiSearch" type="text" placeholder="Enter Keyword" />
         <button class="ai-ask focusable" data-focus-key="ai-ask">Search</button>
       </div>
       <div class="ai-chips">
@@ -4178,6 +4299,7 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="back-key-inline">
         <div class="ai-back-circle focusable" data-focus-key="ai-cat-back">‹</div>
       </div>
+      <div class="ai-cat-loader" id="aiCatLoader"><span></span><span></span><span></span></div>
       <p class="ai-cat-desc" id="aiCatDesc"></p>
       <div class="ai-play-card-bubble" id="aiCatBubble">Sports</div>
       <div class="ai-play-card">
@@ -4187,8 +4309,16 @@ body[data-page="epg-config"] .top-bar{display:none}
             <button class="ai-play-add focusable" data-focus-key="ai-cat-add">+ Add</button>
           </div>
         </div>
-        <div class="ai-play-card-desc" id="aiCatCardDesc"></div>
         <a class="ai-play-card-url" id="aiCatUrl" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="ai-play-card ai-play-card-alt">
+        <div class="ai-play-card-top">
+          <div class="ai-play-card-name" id="aiCatName2">Sports IPTV Playlist2</div>
+          <div class="ai-play-card-actions">
+            <button class="ai-play-add focusable" data-focus-key="ai-cat-add2">+ Add</button>
+          </div>
+        </div>
+        <a class="ai-play-card-url" id="aiCatUrl2" href="#" target="_blank" rel="noopener"></a>
       </div>
       <p class="ai-cat-disclaimer">
         Disclaimer: This playlist is provided by a third-party source (iptv-org). Content availability,
@@ -4286,7 +4416,7 @@ body[data-page="epg-config"] .top-bar{display:none}
     <div class="ld-wrap">
       <div class="ld-ring"><span class="ld-pct" id="ldPct">0%</span></div>
       <div class="ld-text" id="ldText">Playlist is analyzing...</div>
-      <div class="ld-sub" id="ldSub">Loading channels and program guide</div>
+      <div class="ld-sub" id="ldSub">Reading channels and building the program guide</div>
     </div>
   </div>
 
@@ -4415,6 +4545,22 @@ body[data-page="epg-config"] .top-bar{display:none}
       <div class="addm3u-actions">
         <button class="addm3u-cancel focusable" data-focus-key="rename-cancel" data-close-popup="renamePlaylistModal">Cancel</button>
         <button class="addm3u-add focusable" data-focus-key="rename-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       POPUP: DELETE PLAYLIST — SECOND CONFIRMATION
+       ========================================== -->
+  <div class="popup-backdrop" id="deletePlaylistModal">
+    <div class="addm3u-card" style="width:820px;position:relative">
+      <div class="popup-close" data-close-popup="deletePlaylistModal">✕</div>
+      <div class="addm3u-title">Delete playlist</div>
+      <div class="pm-confirm-msg">Are you sure you want to delete <b id="deletePlaylistName">this playlist</b>?</div>
+      <div class="pm-confirm-warn">This action cannot be undone.</div>
+      <div class="addm3u-actions">
+        <button class="addm3u-cancel focusable" data-focus-key="pm-delete-cancel" data-close-popup="deletePlaylistModal">Cancel</button>
+        <button class="addm3u-danger focusable" data-focus-key="pm-delete-confirm">Delete</button>
       </div>
     </div>
   </div>
@@ -5325,7 +5471,10 @@ const state = {
   // true when arriving from search/AI-add; false when browsing My playlist.
   pmUseLoader: false,
   // true when the search/add flow should stay on playlist-mgmt instead of opening channels
-  pmStayOnPlaylistMgmt: false
+  pmStayOnPlaylistMgmt: false,
+  // index of the "selected" playlist row (sticky — the white ring marker stays
+  // on this row even when the cursor hovers a different row)
+  pmSelectedIndex: 0
 };
 
 /* ============================================================
@@ -5337,19 +5486,27 @@ const LOCKED_PROG_KEY = 'verite|10:11|2';
 /* ---- AI Assistant flow data ---- */
 const AI_CATS = {
   Global:     { name:'Global IPTV Playlist',     url:'https://iptv-org.github.io/iptv/index.m3u',
+                url2:'https://iptv-org.github.io/iptv/categories.m3u',
                 desc:'A worldwide collection of free-to-air live TV channels aggregated from public sources across many countries and languages. Best starting point if you are not sure what to watch.' },
   Categories: { name:'Categories IPTV Playlist',  url:'https://iptv-org.github.io/iptv/categories.m3u',
+                url2:'https://iptv-org.github.io/iptv/index.m3u',
                 desc:'The full public playlist grouped by category, so you can later filter by genre (sports, news, movies, music and more) inside the app.' },
   Sports:     { name:'Sports IPTV Playlist',     url:'https://iptv-org.github.io/iptv/categories/sports.m3u',
+                url2:'https://iptv-org.github.io/iptv/index.m3u',
                 desc:'Live sports channels from around the world — football, basketball, tennis, motorsport and more. Great for catching live games and highlights.' },
   News:       { name:'News IPTV Playlist',       url:'https://iptv-org.github.io/iptv/categories/news.m3u',
+                url2:'https://iptv-org.github.io/iptv/index.m3u',
                 desc:'24/7 news channels covering world affairs, business, weather and regional bulletins from multiple public broadcasters.' },
   Movies:     { name:'Movies IPTV Playlist',     url:'https://iptv-org.github.io/iptv/categories/movies.m3u',
+                url2:'https://iptv-org.github.io/iptv/index.m3u',
                 desc:'Movie and film channels streaming public-domain and free cinema content, including classic and international features.' },
   Musics:     { name:'Musics IPTV Playlist',     url:'https://iptv-org.github.io/iptv/categories/music.m3u',
+                url2:'https://iptv-org.github.io/iptv/index.m3u',
                 desc:'Music channels spanning genres and eras — concerts, charts, relaxing streams and cultural broadcasts.' },
 };
 let aiSelectedCat = 'Global';
+// which recommendation card triggered "+ Add" ('' = first card, '2' = second card)
+let __aiAddSuffix = '';
 function selectAiChip(cat){
   aiSelectedCat = cat;
   document.querySelectorAll('#page-ai-home .ai-chip').forEach(c=>{
@@ -5358,6 +5515,7 @@ function selectAiChip(cat){
 }
 function askAi(){
   const cat = AI_CATS[aiSelectedCat] || AI_CATS.Global;
+  __aiAddSuffix = '';
   const pill = document.getElementById('aiCatPill');
   if(pill) pill.textContent = aiSelectedCat;
   const globalEl = document.querySelector('#page-ai-category .ai-play-card-bubble');
@@ -5365,11 +5523,13 @@ function askAi(){
   const nameEl = document.getElementById('aiCatName');
   if(nameEl) nameEl.textContent = cat.name;
   const descEl = document.getElementById('aiCatDesc');
-  if(descEl) descEl.textContent = 'Discover and manage global live streams. Search by category or add your own custom IPTV playlists.';
-  const cardDesc = document.getElementById('aiCatCardDesc');
-  if(cardDesc) cardDesc.textContent = cat.desc;
+  if(descEl) descEl.textContent = 'Based on your keyword, the search results are as follows:';
+  const name2El = document.getElementById('aiCatName2');
+  if(name2El) name2El.textContent = cat.name + '2';
   const u = document.getElementById('aiCatUrl');
   if(u){ u.textContent = cat.url; u.href = cat.url; }
+  const u2 = document.getElementById('aiCatUrl2');
+  if(u2){ u2.textContent = cat.url2; u2.href = cat.url2; }
   go('ai-category');
 }
 function openAddM3U(){
@@ -5377,9 +5537,30 @@ function openAddM3U(){
 }
 function openAddM3UAfterConsent(){
   const cat = AI_CATS[aiSelectedCat] || AI_CATS.Global;
-  document.getElementById('addm3uName').value = cat.name;
+  document.getElementById('addm3uName').value = cat.name + __aiAddSuffix;
   document.getElementById('addm3uUrl').value = cat.url;
   openPopup('addM3UModal');
+}
+/* ============================================================
+   AI CATEGORY INTRO — category pill first, then a loading
+   animation (three dots, mirrors the on-device AI Assistant
+   screen), then the recommendation content fades in.
+   ============================================================ */
+const AI_CAT_LOADING_MS = 1600;
+let __aiCatTimers = [];
+function startAiCatSequence(){
+  const pageEl = document.getElementById('page-ai-category');
+  if(!pageEl) return;
+  __aiCatTimers.forEach(t=>clearTimeout(t));
+  __aiCatTimers = [];
+  pageEl.classList.remove('ai-cat-reveal');
+  pageEl.classList.add('ai-cat-loading');
+  rebuildFocusables(); updateFocus();
+  __aiCatTimers.push(setTimeout(()=>{
+    pageEl.classList.remove('ai-cat-loading');
+    pageEl.classList.add('ai-cat-reveal');
+    rebuildFocusables(); updateFocus();
+  }, AI_CAT_LOADING_MS));
 }
 let __anaTimer = null;
 function startAnalyzing(){
@@ -5724,6 +5905,8 @@ function go(page){
   })[page] || page;
   // Trigger success animation
   if(page==='success') startSuccessSequence();
+  // On entering the AI recommendation page: pill → loading dots → content
+  if(page==='ai-category') startAiCatSequence();
   // On entering m3u-processed, restore toggle state + display
   if(page==='m3u-processed'){
     if(state.processed.name){
@@ -6081,7 +6264,9 @@ function handleActivate(el){
     case 'privacy-open':
       openPopup('privacyModal'); return;
     case 'ai-cat-add':
-      openDisclaimerForAdd(); return;
+      __aiAddSuffix = ''; openDisclaimerForAdd(); return;
+    case 'ai-cat-add2':
+      __aiAddSuffix = '2'; openDisclaimerForAdd(); return;
     case 'home-live':
       go('guide'); return;
     case 'home-iptv':
@@ -6426,12 +6611,17 @@ function handleActivate(el){
     return;
   }
   if(/^pm-edit-/.test(key)){ renamePlaylist(key); return; }
-  /* --- My Playlist rows: show analyzing loader, then open the channels page --- */
+  /* --- My Playlist rows: mark as selected (sticky white ring), then open channels --- */
   if(/^pm-row-/.test(key)){
-    if(state.pmUseLoader){ showLoadingPage(()=>go('channels'), {text:'Adding your playlist...', sub:'Preparing channels and program guide'}); }
+    const i = parseInt(key.slice('pm-row-'.length),10);
+    if(!isNaN(i)) state.pmSelectedIndex = i;
+    if(state.pmUseLoader){ showLoadingPage(()=>go('channels'), {text:'Playlist is analyzing...', sub:'Reading channels and building the program guide'}); }
     else { go('channels'); }
     return;
   }
+  /* Confirmed deletion in the second-confirmation popup (checked before the
+     generic /^pm-delete-/ row branch below, which would otherwise swallow it) */
+  if(key === 'pm-delete-confirm'){ confirmDeletePlaylist(); return; }
   if(/^pm-delete-/.test(key)){ deletePlaylist(key); return; }
   if(key === 'rename-save'){ saveRenamePlaylist(); return; }
   /* Favorites popup lists — items handled by global delegation. */
@@ -6517,7 +6707,7 @@ function validateM3U(){
     return false;
   }
   if(!/^https?:\/\//.test(v)){
-    showError('m3uError','Please enter a valid URL (must start with http:// or https://).');
+    showError('m3uError','Please enter a valid URL (must start with http:// or https://, and must end with .m3u).');
     return false;
   }
   try{ new URL(v); }catch(_){ showError('m3uError','Please enter a valid URL.'); return false; }
@@ -7819,7 +8009,7 @@ function showLoadingPage(onComplete, opts){
   const txtEl = document.getElementById('ldText');
   const subEl = document.getElementById('ldSub');
   if(txtEl) txtEl.textContent = opts.text || 'Playlist is analyzing...';
-  if(subEl) subEl.textContent = opts.sub  || 'Loading channels and program guide';
+  if(subEl) subEl.textContent = opts.sub  || 'Reading channels and building the program guide';
   if(__loadingTimer){ clearInterval(__loadingTimer); __loadingTimer = null; }
   let pct = 0;
   if(pctEl) pctEl.textContent = '0%';
@@ -7866,6 +8056,9 @@ function showPlaylistLoader(onComplete){
 function renderPlaylistMgmt(){
   const list = document.getElementById('pmList');
   if(!list) return;
+  // keep the sticky selection valid after additions / deletions
+  if(state.pmSelectedIndex > state.playlists.length-1) state.pmSelectedIndex = Math.max(0, state.playlists.length-1);
+  if(state.pmSelectedIndex < 0) state.pmSelectedIndex = 0;
   const cnt = document.getElementById('pmCount');
   if(cnt) cnt.textContent = (state.playlists?state.playlists.length:0) + ' playlists';
   if(!state.playlists || !state.playlists.length){
@@ -7873,11 +8066,14 @@ function renderPlaylistMgmt(){
     rebuildFocusables(); updateFocus(); return;
   }
   list.innerHTML = state.playlists.map((p,i)=>
-    '<div class="pm-row focusable" data-focus-key="pm-row-'+i+'">'+
-      '<div class="pm-row-ic">'+(p.icon||'📺')+'</div>'+
-      '<div class="pm-row-meta">'+
-        '<div class="pm-row-name">'+escapeHtml(p.name||'Playlist')+'</div>'+
-        '<div class="pm-row-ch">'+escapeHtml(p.url||'')+(p.channels?('  ·  '+(p.channels)+' channels'):'')+'</div>'+
+    '<div class="pm-item">'+
+      '<div class="pm-row focusable'+(i===state.pmSelectedIndex?' selected':'')+'" data-focus-key="pm-row-'+i+'">'+
+        '<div class="pm-row-ic">'+(p.icon||'📺')+'</div>'+
+        '<div class="pm-row-meta">'+
+          '<div class="pm-row-name">'+escapeHtml(p.name||'Playlist')+'</div>'+
+          '<div class="pm-row-ch">'+escapeHtml(p.url||'')+(p.channels?('  ·  '+(p.channels)+' channels'):'')+'</div>'+
+        '</div>'+
+        '<span class="pm-row-ring" aria-hidden="true"></span>'+
       '</div>'+
       '<div class="pm-row-actions">'+
         '<div class="pm-row-action pm-row-edit focusable" data-focus-key="pm-edit-'+i+'" title="Rename">'+
@@ -7901,11 +8097,23 @@ function renderPlaylistMgmt(){
   rebuildFocusables(); updateFocus();
 }
 
-/* Remove a playlist from the collection */
+/* Delete a playlist — opens a second-confirmation popup first */
+let deleteIndex = -1;
 function deletePlaylist(key){
   const i = parseInt(key.slice('pm-delete-'.length),10);
-  if(isNaN(i) || !state.playlists[i]) return;
+  if(isNaN(i) || !state.playlists || !state.playlists[i]) return;
+  deleteIndex = i;
+  const nm = document.getElementById('deletePlaylistName');
+  if(nm) nm.textContent = (state.playlists[i].name || 'this playlist');
+  openPopup('deletePlaylistModal');
+}
+/* Confirmed in the popup — actually remove the playlist */
+function confirmDeletePlaylist(){
+  const i = deleteIndex;
+  deleteIndex = -1;
+  if(isNaN(i) || i < 0 || !state.playlists || !state.playlists[i]){ closePopup('deletePlaylistModal'); return; }
   const removed = state.playlists.splice(i,1)[0];
+  closePopup('deletePlaylistModal');
   renderPlaylistMgmt();
   showToast('Removed: ' + (removed.name||'playlist'));
 }
@@ -8162,12 +8370,12 @@ function showSettingsSection(sec){
 }
 
 function renderLanguage(){
-  const langs = ['Español','Português','English'];
+  const langs = ['English','Português','Español'];
   document.querySelectorAll('.js-lang-list').forEach(list=>{
     list.innerHTML = langs.map(l=>{
       const active = state.selectedLang === l ? ' active' : '';
-      const mark = state.selectedLang === l ? ' ✓' : '';
-      return '<div class="focusable settings-row'+active+'" data-focus-key="lang-'+l+'"><span class="settings-ic">🌐</span><span>'+l+'</span><span class="settings-arrow">'+mark+'</span></div>';
+      const on = state.selectedLang === l ? ' on' : '';
+      return '<div class="focusable settings-row'+active+'" data-focus-key="lang-'+l+'"><span class="settings-ic">🌐</span><span>'+l+'</span><span class="settings-arrow"><span class="lang-radio'+on+'"></span></span></div>';
     }).join('');
   });
 }
