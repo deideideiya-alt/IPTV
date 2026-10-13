@@ -1252,6 +1252,16 @@ body{
   font-size:17px;font-weight:400;color:rgba(255,255,255,.52);
   letter-spacing:.2px;
 }
+#page-loading .ld-sub-frame{
+  display:inline-block;
+  margin-top:18px;
+  padding:9px 22px;
+  border:1.5px solid rgba(255,255,255,.85);
+  border-radius:999px;
+  color:rgba(255,255,255,.95);
+  background:rgba(255,255,255,.05);
+  letter-spacing:.3px;
+}
 
 /* ----- #page-channels ----- */
 #page-channels{
@@ -4027,11 +4037,9 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="net-warn">⚠️ Please keep your phone and TV on the same Wi-Fi network.</div>
           <div style="display:flex;gap:32px;align-items:flex-start">
             <div class="focusable qr-frame focusable-m3u" data-focus-key="m3u-qr" id="qrFrame" onclick="simulateScan()" title="Click to simulate scanning">
-              <!-- QR pattern will render here -->
               <svg viewBox="0 0 100 100" id="qrSvg">
                 <rect width="100" height="100" fill="white"/>
                 <g fill="#1a1338">
-                  <!-- generated QR pattern below -->
                 </g>
               </svg>
               <div class="qr-tap-hint">Click to simulate scan</div>
@@ -4051,7 +4059,7 @@ body[data-page="epg-config"] .top-bar{display:none}
         </div>
 
         <div class="focusable input-field focusable-m3u" data-focus-key="m3u-url" style="margin-top:14px">
-          <input class="label" id="m3uUrl" placeholder="Enter URL" autocomplete="off"/>
+          <input class="label" id="m3uUrl" placeholder="Enter URL" value="https://iptv-org.github.io/iptv/index.m3u" autocomplete="off"/>
           <span class="hint">URL</span>
         </div>
         </div>
@@ -4092,19 +4100,19 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="item">
             <div style="font-size:22px;color:var(--text-secondary);margin-bottom:8px">Server address</div>
             <div class="focusable input-field focusable-xc" data-focus-key="xc-server">
-              <input class="label" id="xcServer" placeholder="http://example.com" autocomplete="off"/>
+              <input class="label" id="xcServer" placeholder="http://example.com" value="http://demo-xtream.example.com:8080" autocomplete="off"/>
             </div>
           </div>
           <div class="item">
             <div style="font-size:22px;color:var(--text-secondary);margin-bottom:8px">Username</div>
             <div class="focusable input-field focusable-xc" data-focus-key="xc-user">
-              <input class="label" id="xcUser" placeholder="Username" autocomplete="off"/>
+              <input class="label" id="xcUser" placeholder="Username" value="demo" autocomplete="off"/>
             </div>
           </div>
           <div class="item">
             <div style="font-size:22px;color:var(--text-secondary);margin-bottom:8px">Password</div>
             <div class="focusable input-field focusable-xc" data-focus-key="xc-pass">
-              <input class="label" id="xcPass" placeholder="••••••••" type="password" autocomplete="off"/>
+              <input class="label" id="xcPass" placeholder="••••••••" type="password" value="demo" autocomplete="off"/>
             </div>
           </div>
         </div>
@@ -4142,7 +4150,7 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="item">
             <div style="font-size:22px;color:var(--text-secondary);margin-bottom:8px">Server address</div>
             <div class="focusable input-field focusable-stalker" data-focus-key="st-server">
-              <input class="label" id="stServer" placeholder="http://portal.example.com" autocomplete="off"/>
+              <input class="label" id="stServer" placeholder="http://portal.example.com" value="http://demo-portal.example.com" autocomplete="off"/>
             </div>
           </div>
           <div class="item">
@@ -5992,6 +6000,7 @@ function showGuidePane(){
    ============================================================ */
 (function buildQR(){
   const svg = document.getElementById('qrSvg');
+  if(!svg) return;
   const g = svg.querySelector('g');
   // 25x25 pseudo QR pattern
   const size = 25;
@@ -6110,7 +6119,8 @@ document.addEventListener('keydown', e=>{
     handleBack();
     return;
   }
-  if(k==='p'||k==='P'){
+  // Open phone preview via P key — M3U page only, so Xtream/others stay clean
+  if((k==='p'||k==='P') && state.currentPage==='m3u'){
     togglePhone();
     return;
   }
@@ -6288,9 +6298,11 @@ function handleActivate(el){
       go('home'); return;
     case 'm3u-next':
       if(!validateM3U()) return;
-      // M3U flow: enter URL → Next → loading (analyzing) → "Playlist is processed" page
-      showLoadingPage(()=>{ renderProcessedFromM3U(); go('m3u-processed'); },
-        {text:'Playlist is analyzing...', sub:'Reading channels and building the program guide'});
+      // M3U flow: enter URL → Next → ① "Playlist is analyzing..." → ② "EPG is analyzing..." → "Playlist is processed" page
+      showLoadingPage(()=>{
+        showLoadingPage(()=>{ renderProcessedFromM3U(); go('m3u-processed'); },
+          {text:'EPG is analyzing...', sub:'Skip loading movies, TV series', frame:true});
+      }, {text:'Playlist is analyzing...', sub:'Reading channels and building the program guide'});
       return;
     case 'm3u-back':
       go('type'); return;
@@ -6317,7 +6329,16 @@ function handleActivate(el){
       return;
     case 'xc-next':
       if(!validateXC()) return;
-      go('success'); return;
+      // Xtream flow: Connect → loading "Playlist is analyzing..." → loading
+      // "EPG is analyzing..." → My Playlist (replaces the old "Importing…" page)
+      showLoadingPage(()=>{
+        showLoadingPage(()=>{
+          registerXcPlaylist();
+          state.pmUseLoader = false;
+          go('playlist-mgmt');
+        }, {text:'EPG is analyzing...', sub:'Skip loading movies, TV series', frame:true});
+      }, {text:'Playlist is analyzing...', sub:'Reading channels and building the program guide'});
+      return;
     case 'xc-back':
       go('type'); return;
     case 'st-next':
@@ -7994,6 +8015,22 @@ function addPlaylistToCollection(p){
   state.playlists.unshift(p);
 }
 
+/* Register the imported Xtream-Codes playlist into "My playlist" so the row
+   appears once the two loading steps finish. */
+function registerXcPlaylist(){
+  const name = derivePlaylistName(state.config.server || '');
+  state.processed.name = name;
+  state.processed.mode = 'tv';
+  addPlaylistToCollection({
+    icon: '📡',
+    name: name,
+    url: state.config.server || '',
+    channels: state.processed.channels || 0,
+    movies: state.processed.movies || 0,
+    type: 'xc'
+  });
+}
+
 /* Minimal HTML-escape for playlist names */
 function escapeHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -8009,7 +8046,10 @@ function showLoadingPage(onComplete, opts){
   const txtEl = document.getElementById('ldText');
   const subEl = document.getElementById('ldSub');
   if(txtEl) txtEl.textContent = opts.text || 'Playlist is analyzing...';
-  if(subEl) subEl.textContent = opts.sub  || 'Reading channels and building the program guide';
+  if(subEl){
+    subEl.textContent = opts.sub  || 'Reading channels and building the program guide';
+    subEl.classList.toggle('ld-sub-frame', !!opts.frame);
+  }
   if(__loadingTimer){ clearInterval(__loadingTimer); __loadingTimer = null; }
   let pct = 0;
   if(pctEl) pctEl.textContent = '0%';
