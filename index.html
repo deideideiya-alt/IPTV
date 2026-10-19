@@ -4705,8 +4705,8 @@ body[data-page="epg-config"] .top-bar{display:none}
       <aside class="settings-side">
         <div class="settings-side-title">Settings</div>
         <div class="settings-nav">
-          <div class="focusable settings-nav-item" data-focus-key="settings-parental">Parental Control</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-language">Language</div>
+          <div class="focusable settings-nav-item" data-focus-key="settings-parental">Parental Control</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-about">About Us</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-contact">Contact Us</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-terms">Terms of Use</div>
@@ -6551,10 +6551,12 @@ function handleActivate(el){
     case 'pin-cancel': pinCancel(); return;
     case 'pin-ok': pinSubmit(); return;
     case 'pin-back-arrow':
-      go(state.pinMode === 'unlock' ? 'guide' : 'settings'); return;
+      if(state.pinMode === 'unlock'){ go('guide'); }
+      else { returnFromParental(); }
+      return;
 
     /* ----- Age rating ----- */
-    case 'age-cancel': go('settings'); return;
+    case 'age-cancel': returnFromParental(); return;
     case 'age-save': saveAgeRating(); return;
     case 'age-back-arrow': go('parental-pin'); return;
 
@@ -6691,7 +6693,10 @@ function handleBack(){
     case 'playlist-mgmt': go('home'); break;
     case 'about': go('settings'); break;
     case 'settings': go('guide'); break;
-    case 'parental-pin': go('settings'); break;
+    case 'parental-pin':
+      if(state.pinMode === 'unlock'){ go('settings'); }
+      else { returnFromParental(); }
+      break;
     case 'age-rating': go('parental-pin'); break;
     case 'language': go('settings'); break;
     case 'contact': go('settings'); break;
@@ -8288,7 +8293,7 @@ function pinClear(){
 }
 function pinCancel(){
   if(state.pinMode === 'unlock') go('guide');
-  else go('settings');
+  else returnFromParental();
 }
 function unlockProgram(){
   state.lockedProgs.delete(state.lockedProgKeyToUnlock || LOCKED_PROG_KEY);
@@ -8409,6 +8414,12 @@ function showSettingsSection(sec){
   });
   if(sec === 'language'){ renderLanguage(); }
   rebuildFocusables(); updateFocus();
+}
+/* Return to Settings with the sidebar focused on Language — used when the
+   Parental Control flow is exited before completing the age-rating step. */
+function returnFromParental(){
+  state.settingsSection = 'language';
+  go('settings');
 }
 
 function renderLanguage(){
