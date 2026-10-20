@@ -3046,6 +3046,26 @@ body{
 }
 .st-panel{display:none;flex-direction:column;height:100%;min-height:0}
 .st-panel.on{display:flex}
+/* Parental Control focus info pane — shown in the right column while the
+   sidebar item is focused; the PIN page only opens on click/OK */
+.settings-content.pi-hide .st-panel{display:none}
+.parental-info{
+  display:none;flex:1;min-height:0;
+  align-items:center;gap:20px;
+  padding:0 10px;
+}
+.parental-info.show{display:flex}
+.parental-info .pi-icon{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+  border:2.5px solid rgba(255,255,255,.85);color:rgba(255,255,255,.85);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;font-style:italic;font-family:Georgia,'Times New Roman',serif;
+}
+.parental-info .pi-title{font-size:28px;font-weight:700;color:#fff;letter-spacing:.5px}
+.parental-info .pi-text{
+  font-size:20px;color:rgba(255,255,255,.75);line-height:1.55;
+  margin-top:12px;max-width:520px;
+}
 .st-title{
   font-size:30px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
   color:#fff;text-align:center;padding:4px 0 16px;flex:0 0 auto;
@@ -4798,6 +4818,14 @@ body[data-page="epg-config"] .top-bar{display:none}
             <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@iptvplus.com</b>.</p>
           </div>
         </div>
+        <!-- Parental Control focus-only info pane (right column) -->
+        <div class="parental-info" id="parentalInfo">
+          <div class="pi-icon">i</div>
+          <div class="pi-body">
+            <div class="pi-title">Password Prompt</div>
+            <div class="pi-text">You can check the User Manual for more information about the password</div>
+          </div>
+        </div>
       </section>
     </div>
   </div>
@@ -6071,6 +6099,20 @@ function updateFocus(){
       el.classList.remove('focused');
     }
   });
+  if(state.currentPage==='settings') syncParentalInfo();
+}
+/* While the Parental Control sidebar item is focused, the right column shows
+   the info pane instead of the active section. Clicking still opens the PIN page. */
+function syncParentalInfo(){
+  const content = document.querySelector('#page-settings .settings-content');
+  const info = document.getElementById('parentalInfo');
+  if(!content || !info) return;
+  const cur = focusables[focusIndex];
+  const show = !!(cur && cur.dataset && cur.dataset.focusKey === 'settings-parental');
+  if(info.classList.contains('show') === show) return;
+  info.classList.toggle('show', show);
+  content.classList.toggle('pi-hide', show);
+  rebuildFocusables();
 }
 
 document.addEventListener('focusin', e=>{
