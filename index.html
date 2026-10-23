@@ -126,6 +126,9 @@ body{
   font-size:84px;font-weight:600;line-height:1.05;letter-spacing:-1px;
   max-width:520px;
 }
+.brand-text{
+  display:flex;flex-direction:column;
+}
 .brand-sub{
   margin-top:18px;
   font-size:24px;font-weight:400;line-height:1.4;letter-spacing:.2px;
@@ -4054,8 +4057,10 @@ body[data-page="epg-config"] .top-bar{display:none}
             <circle cx="50" cy="50" r="4" fill="#ffc857"/>
           </svg>
         </div>
-        <div class="brand-title">M3U Playlist</div>
-        <div class="brand-sub">Add by Scanning QR Code with Phone / Add by Entering URL by Keyboard</div>
+        <div class="brand-text">
+          <div class="brand-title">M3U Playlist</div>
+          <div class="brand-sub">Add by Scanning QR Code with Phone / Add by Entering URL by Keyboard</div>
+        </div>
       </div>
       <div class="action-side" style="padding-right:160px">
         <div class="form-scroll">
