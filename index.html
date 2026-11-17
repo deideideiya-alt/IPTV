@@ -421,6 +421,27 @@ body{
   margin-top:20px;
 }
 
+/* ----- User Experience Agreement (UXP) popup ----- */
+.uxp-card{max-width:920px;padding:28px 40px}
+.uxp-card .popup-title{margin-bottom:6px}
+.uxp-card .uxp-lede{font-size:18px;line-height:1.5;color:rgba(255,255,255,.75);margin:0 0 14px}
+.uxp-card .terms-modal-body{max-height:none;overflow-y:auto}
+.uxp-card .terms-modal-body p{font-size:16px;line-height:1.5;margin-bottom:9px}
+.uxp-switch-row{
+  display:flex;align-items:center;gap:22px;
+  padding:22px 26px;margin-top:6px;
+  border:1px solid rgba(255,255,255,.14);border-radius:16px;
+  background:rgba(255,255,255,.04);
+}
+.uxp-switch-row .toggle{padding:0;font-size:26px;flex:0 0 auto}
+.uxp-switch-label{font-size:23px;color:#fff;font-weight:600}
+.uxp-switch-state{
+  margin-left:auto;font-size:20px;font-weight:600;
+  color:var(--accent);min-width:56px;text-align:right;
+}
+.uxp-card .popup-actions{justify-content:center}
+.uxp-card .popup-actions button{min-width:220px;font-size:24px;padding:18px 40px}
+
 /* ----- Disclaimer popup (search / AI add flow) ----- */
 .disclaimer-card{
   max-height:88vh;
@@ -4743,6 +4764,7 @@ body[data-page="epg-config"] .top-bar{display:none}
           <div class="focusable settings-nav-item" data-focus-key="settings-contact">Contact Us</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-terms">Terms of Use</div>
           <div class="focusable settings-nav-item" data-focus-key="settings-privacy">Privacy Policy</div>
+          <div class="focusable settings-nav-item" data-focus-key="settings-uxp">User Experience Agreement</div>
         </div>
       </aside>
       <section class="settings-content">
@@ -4828,6 +4850,21 @@ body[data-page="epg-config"] .top-bar{display:none}
             <p>We may update this Privacy Policy from time to time. If we make material changes, we will provide reasonable notice within the app. Your continued use of the app after the changes take effect constitutes acceptance of the updated Policy.</p>
             <h2>Contact</h2>
             <p>If you have any questions about this Privacy Policy or our practices, please contact us at <b>support@iptvplus.com</b>.</p>
+          </div>
+        </div>
+        <div class="st-panel" data-st="uxp">
+          <div class="st-title">User Experience Agreement</div>
+          <div class="st-body">
+            <p>We process your Device information, Performance and Analytics information and your feedback to troubleshoot functionality or other issues for the Service and to improve our products and Services, user experience and customer communications. The data is only used for analysis and for further improvement on our products and services. We will not use it to create a specific profile of your habits when using our service.</p>
+            <p>Your Control: You can change your choice on Setting-User Experience Agreement Page to decide whether to turn off this switch.</p>
+            <p>You can refer to our Privacy Policy for more information about how we handle your personal data.</p>
+            <div class="uxp-switch-row">
+              <div class="focusable toggle on" data-focus-key="settings-uxp-toggle" id="uxpSettingsToggle">
+                <span class="check"></span>
+              </div>
+              <div class="uxp-switch-label">User Experience Improvement Program</div>
+              <div class="uxp-switch-state" id="uxpSettingsState">On</div>
+            </div>
           </div>
         </div>
         <!-- Parental Control focus-only info pane (right column) -->
@@ -5452,6 +5489,32 @@ body[data-page="epg-config"] .top-bar{display:none}
     </div>
   </div>
 
+  <!-- ==========================================
+       POPUP: USER EXPERIENCE AGREEMENT (UXP) — mandatory on first launch,
+       shown right after the Get Started page appears. Only OK dismisses it.
+       ========================================== -->
+  <div class="popup-backdrop uxp-modal" id="uxpModal">
+    <div class="terms-modal-card uxp-card">
+      <div class="popup-title">User Experience Agreement</div>
+      <p class="uxp-lede">Help us improve IPTV+ by sharing anonymous device, performance and analytics information.</p>
+      <div class="terms-modal-body">
+        <p>We process your Device information, Performance and Analytics information and your feedback to troubleshoot functionality or other issues for the Service and to improve our products and Services, user experience and customer communications. The data is only used for analysis and for further improvement on our products and services. We will not use it to create a specific profile of your habits when using our service.</p>
+        <p>Your Control: You can change your choice on Setting-User Experience Agreement Page to decide whether to turn off this switch.</p>
+        <p>You can refer to our Privacy Policy for more information about how we handle your personal data.</p>
+      </div>
+      <div class="uxp-switch-row">
+        <div class="focusable toggle on" data-focus-key="uxp-popup-toggle" id="uxpPopupToggle">
+          <span class="check"></span>
+        </div>
+        <div class="uxp-switch-label">User Experience Improvement Program</div>
+        <div class="uxp-switch-state" id="uxpPopupState">On</div>
+      </div>
+      <div class="popup-actions">
+        <button class="focusable" data-focus-key="uxp-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
   <!-- ==========================================
@@ -5475,6 +5538,9 @@ body[data-page="epg-config"] .top-bar{display:none}
    ============================================================ */
 const state = {
   privacyAccepted: false,
+  // User Experience Agreement (UXP) consent: ON by default, switchable in Settings
+  uxpOptIn: true,
+  uxpAgreementShown: false,
   currentPage: 'splash',
   playerChannel: null,
   playerProgKey: null,
@@ -6026,6 +6092,8 @@ function go(page){
       el.classList.toggle('active', el.dataset.focusKey === 'ch-global-my');
     });
   }
+  // Get Started page has appeared → show the mandatory UXP agreement popup (first entry only)
+  if(page==='terms' && !state.uxpAgreementShown){ openUxpAgreement(); }
 }
 
 /* ============================================================
@@ -6077,6 +6145,12 @@ function showGuidePane(){
    ============================================================ */
 let focusables = [];
 function rebuildFocusables(){
+  // Mandatory UXP agreement: isolate focus to its own controls only
+  const uxpModal = document.getElementById('uxpModal');
+  if(uxpModal && uxpModal.classList.contains('open')){
+    focusables = Array.from(uxpModal.querySelectorAll('.focusable')).filter(el=>el.getClientRects().length>0);
+    return;
+  }
   const page = document.getElementById('page-'+state.currentPage);
   let list = [];
   if(page) list = Array.from(page.querySelectorAll('.focusable')).filter(el=>{
@@ -6265,12 +6339,21 @@ function handleActivate(el){
   const key = el.dataset.focusKey;
   if(!key) return;
 
+  // Mandatory UXP agreement: while open, only its own controls may be activated
+  // (OK to dismiss, toggle to switch) — nothing behind the modal responds.
+  const uxpOpen = document.getElementById('uxpModal').classList.contains('open');
+  if(uxpOpen && key!=='uxp-ok' && key!=='uxp-popup-toggle') return;
+
   // Generic: any focusable carrying data-close-popup dismisses that popup
   if(el.dataset.closePopup){ closePopup(el.dataset.closePopup); return; }
 
   // Toggles: pressing OK toggles
   if(el.classList.contains('toggle')){
     el.classList.toggle('on');
+    // User Experience Improvement switch keeps one shared state across popup + Settings
+    if(el.id==='uxpPopupToggle' || el.id==='uxpSettingsToggle'){
+      setUxpOptIn(el.classList.contains('on'));
+    }
     return;
   }
 
@@ -6588,6 +6671,10 @@ function handleActivate(el){
       showSettingsSection('terms'); return;
     case 'settings-privacy':
       showSettingsSection('privacy'); return;
+    case 'settings-uxp':
+      showSettingsSection('uxp'); return;
+    case 'uxp-ok':
+      dismissUxpAgreement(); return;
 
     /* ----- PIN pad ----- */
     case 'pin-0': pinPress('0'); return;
@@ -6723,10 +6810,10 @@ function handleActivate(el){
 function handleBack(){
   if(state.phoneOpen){ togglePhone(false); return; }
   if(state.fpOpen){ closeFilePicker(); return; }
-  // Close any open popup first
+  // Close any open popup first — mandatory UXP agreement cannot be dismissed by Back
   const openP = document.querySelector('.popup-backdrop.open');
   if(openP){
-    closePopup(openP.id);
+    if(openP.id!=='uxpModal') closePopup(openP.id);
     return;
   }
   // Sidebar is now flat, no nested sub-chip collapse needed here
@@ -7729,6 +7816,27 @@ function updateFavUI(){
   document.querySelectorAll('#favCountBadge').forEach(badge=>{ badge.textContent = favs.size; });
 }
 
+/* User Experience Agreement: one shared switch for the first-run popup and the
+   Settings > User Experience Agreement page. Default ON. */
+function setUxpOptIn(on){
+  state.uxpOptIn = !!on;
+  [['uxpPopupToggle','uxpPopupState'],['uxpSettingsToggle','uxpSettingsState']].forEach(pair=>{
+    const t = document.getElementById(pair[0]);
+    const s = document.getElementById(pair[1]);
+    if(t) t.classList.toggle('on', state.uxpOptIn);
+    if(s) s.textContent = state.uxpOptIn ? 'On' : 'Off';
+  });
+}
+function openUxpAgreement(){
+  setUxpOptIn(state.uxpOptIn);
+  openPopup('uxpModal');
+}
+/* Mandatory first-run popup: only the OK button can dismiss it. */
+function dismissUxpAgreement(){
+  state.uxpAgreementShown = true;
+  closePopup('uxpModal');
+}
+
 function openPopup(id){
   document.getElementById(id).classList.add('open');
   state.popupOpen = true;
@@ -7791,11 +7899,12 @@ document.addEventListener('click', e=>{
   e.stopPropagation();
   closePopup(x.dataset.closePopup);
 });
-/* Click outside popup card → close popup */
+/* Click outside popup card → close popup (mandatory UXP agreement is exempt) */
 document.addEventListener('click', e=>{
   const back = e.target.closest('.popup-backdrop.open');
   if(!back) return;
-    if(e.target!==back) return;     // clicking inside card doesn't close
+  if(back.id==='uxpModal') return;  // only OK can dismiss the UXP agreement
+  if(e.target!==back) return;       // clicking inside card doesn't close
   closePopup(back.id);
 });
 function showToast(msg, danger){
@@ -8688,6 +8797,7 @@ window.addEventListener('load', ()=>{
     requestAnimationFrame(tick);
   }
 
+  setUxpOptIn(state.uxpOptIn);  // sync UXP toggles to default ON
   rebuildFocusables();
   updateFocus();
 
