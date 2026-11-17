@@ -427,20 +427,27 @@ body{
 .uxp-card .uxp-lede{font-size:18px;line-height:1.5;color:rgba(255,255,255,.75);margin:0 0 14px}
 .uxp-card .terms-modal-body{max-height:none;overflow-y:auto}
 .uxp-card .terms-modal-body p{font-size:16px;line-height:1.5;margin-bottom:9px}
-.uxp-switch-row{
-  display:flex;align-items:center;gap:22px;
-  padding:22px 26px;margin-top:6px;
-  border:1px solid rgba(255,255,255,.14);border-radius:16px;
-  background:rgba(255,255,255,.04);
-}
-.uxp-switch-row .toggle{padding:0;font-size:26px;flex:0 0 auto}
-.uxp-switch-label{font-size:23px;color:#fff;font-weight:600}
-.uxp-switch-state{
-  margin-left:auto;font-size:20px;font-weight:600;
-  color:var(--accent);min-width:56px;text-align:right;
-}
 .uxp-card .popup-actions{justify-content:center}
 .uxp-card .popup-actions button{min-width:220px;font-size:24px;padding:18px 40px}
+
+/* ----- UXP Settings: OFF / ON choice buttons (reference screenshot) ----- */
+.uxp-choice-row{
+  display:flex;gap:18px;justify-content:center;margin-top:22px;
+}
+.uxp-choice{
+  min-width:185px;height:56px;padding:0 26px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  background:#2a2a2a;border-radius:12px;
+  color:rgba(255,255,255,.62);font-size:26px;font-weight:600;
+}
+.uxp-choice.selected{background:#333;color:rgba(255,255,255,.92)}
+.uxp-choice-check{
+  display:none;width:26px;height:26px;border-radius:50%;
+  background:rgba(255,255,255,.55);color:#1c1c1c;
+  font-size:16px;line-height:26px;text-align:center;font-weight:700;
+}
+.uxp-choice.selected .uxp-choice-check{display:inline-block}
+.uxp-choice.selected .uxp-choice-check::after{content:'✓'}
 
 /* ----- Disclaimer popup (search / AI add flow) ----- */
 .disclaimer-card{
@@ -4858,12 +4865,11 @@ body[data-page="epg-config"] .top-bar{display:none}
             <p>We process your Device information, Performance and Analytics information and your feedback to troubleshoot functionality or other issues for the Service and to improve our products and Services, user experience and customer communications. The data is only used for analysis and for further improvement on our products and services. We will not use it to create a specific profile of your habits when using our service.</p>
             <p>Your Control: You can change your choice on Setting-User Experience Agreement Page to decide whether to turn off this switch.</p>
             <p>You can refer to our Privacy Policy for more information about how we handle your personal data.</p>
-            <div class="uxp-switch-row">
-              <div class="focusable toggle on" data-focus-key="settings-uxp-toggle" id="uxpSettingsToggle">
-                <span class="check"></span>
+            <div class="uxp-choice-row">
+              <div class="focusable uxp-choice" data-focus-key="settings-uxp-off" id="uxpChoiceOff">OFF</div>
+              <div class="focusable uxp-choice selected" data-focus-key="settings-uxp-on" id="uxpChoiceOn">
+                <span class="uxp-choice-check"></span>ON
               </div>
-              <div class="uxp-switch-label">User Experience Improvement Program</div>
-              <div class="uxp-switch-state" id="uxpSettingsState">On</div>
             </div>
           </div>
         </div>
@@ -5490,8 +5496,10 @@ body[data-page="epg-config"] .top-bar{display:none}
   </div>
 
   <!-- ==========================================
-       POPUP: USER EXPERIENCE AGREEMENT (UXP) — mandatory on first launch,
-       shown right after the Get Started page appears. Only OK dismisses it.
+       POPUP: USER EXPERIENCE AGREEMENT (UXP) — mandatory on first launch.
+       Shown only after the user clicks Get Started (post-splash). No opt-out
+       control here — the only action is OK. Opt-in can be changed later in
+       Settings > User Experience Agreement.
        ========================================== -->
   <div class="popup-backdrop uxp-modal" id="uxpModal">
     <div class="terms-modal-card uxp-card">
@@ -5501,13 +5509,6 @@ body[data-page="epg-config"] .top-bar{display:none}
         <p>We process your Device information, Performance and Analytics information and your feedback to troubleshoot functionality or other issues for the Service and to improve our products and Services, user experience and customer communications. The data is only used for analysis and for further improvement on our products and services. We will not use it to create a specific profile of your habits when using our service.</p>
         <p>Your Control: You can change your choice on Setting-User Experience Agreement Page to decide whether to turn off this switch.</p>
         <p>You can refer to our Privacy Policy for more information about how we handle your personal data.</p>
-      </div>
-      <div class="uxp-switch-row">
-        <div class="focusable toggle on" data-focus-key="uxp-popup-toggle" id="uxpPopupToggle">
-          <span class="check"></span>
-        </div>
-        <div class="uxp-switch-label">User Experience Improvement Program</div>
-        <div class="uxp-switch-state" id="uxpPopupState">On</div>
       </div>
       <div class="popup-actions">
         <button class="focusable" data-focus-key="uxp-ok">OK</button>
@@ -6092,8 +6093,6 @@ function go(page){
       el.classList.toggle('active', el.dataset.focusKey === 'ch-global-my');
     });
   }
-  // Get Started page has appeared → show the mandatory UXP agreement popup (first entry only)
-  if(page==='terms' && !state.uxpAgreementShown){ openUxpAgreement(); }
 }
 
 /* ============================================================
@@ -6339,10 +6338,10 @@ function handleActivate(el){
   const key = el.dataset.focusKey;
   if(!key) return;
 
-  // Mandatory UXP agreement: while open, only its own controls may be activated
-  // (OK to dismiss, toggle to switch) — nothing behind the modal responds.
+  // Mandatory UXP agreement: while open, ONLY OK may be activated — nothing
+  // behind the modal responds, and there is no opt-out control in the popup.
   const uxpOpen = document.getElementById('uxpModal').classList.contains('open');
-  if(uxpOpen && key!=='uxp-ok' && key!=='uxp-popup-toggle') return;
+  if(uxpOpen && key!=='uxp-ok') return;
 
   // Generic: any focusable carrying data-close-popup dismisses that popup
   if(el.dataset.closePopup){ closePopup(el.dataset.closePopup); return; }
@@ -6350,10 +6349,6 @@ function handleActivate(el){
   // Toggles: pressing OK toggles
   if(el.classList.contains('toggle')){
     el.classList.toggle('on');
-    // User Experience Improvement switch keeps one shared state across popup + Settings
-    if(el.id==='uxpPopupToggle' || el.id==='uxpSettingsToggle'){
-      setUxpOptIn(el.classList.contains('on'));
-    }
     return;
   }
 
@@ -6401,7 +6396,11 @@ function handleActivate(el){
     case 'terms-get-started':
       state.privacyAccepted = true;
       state.pmStayOnPlaylistMgmt = true;
-      go('home'); return;
+      // Splash finished and user clicked Get Started → show mandatory UXP popup once,
+      // then enter the app after OK. Later entries go straight home.
+      if(!state.uxpAgreementShown){ openUxpAgreement(); }
+      else { go('home'); }
+      return;
     case 'terms-consent':
       closePopup('termsModal');
       openAddM3UAfterConsent(); return;
@@ -6673,6 +6672,10 @@ function handleActivate(el){
       showSettingsSection('privacy'); return;
     case 'settings-uxp':
       showSettingsSection('uxp'); return;
+    case 'settings-uxp-off':
+      setUxpOptIn(false); return;
+    case 'settings-uxp-on':
+      setUxpOptIn(true); return;
     case 'uxp-ok':
       dismissUxpAgreement(); return;
 
@@ -7816,25 +7819,24 @@ function updateFavUI(){
   document.querySelectorAll('#favCountBadge').forEach(badge=>{ badge.textContent = favs.size; });
 }
 
-/* User Experience Agreement: one shared switch for the first-run popup and the
-   Settings > User Experience Agreement page. Default ON. */
+/* User Experience Agreement: OFF / ON choice buttons on the Settings page.
+   Default ON. The first-run popup only informs — it has no opt-out control. */
 function setUxpOptIn(on){
   state.uxpOptIn = !!on;
-  [['uxpPopupToggle','uxpPopupState'],['uxpSettingsToggle','uxpSettingsState']].forEach(pair=>{
-    const t = document.getElementById(pair[0]);
-    const s = document.getElementById(pair[1]);
-    if(t) t.classList.toggle('on', state.uxpOptIn);
-    if(s) s.textContent = state.uxpOptIn ? 'On' : 'Off';
-  });
+  const off = document.getElementById('uxpChoiceOff');
+  const onBtn = document.getElementById('uxpChoiceOn');
+  if(off) off.classList.toggle('selected', !state.uxpOptIn);
+  if(onBtn) onBtn.classList.toggle('selected', state.uxpOptIn);
 }
 function openUxpAgreement(){
-  setUxpOptIn(state.uxpOptIn);
   openPopup('uxpModal');
 }
-/* Mandatory first-run popup: only the OK button can dismiss it. */
+/* Mandatory first-run popup: only the OK button can dismiss it.
+   Dismissing concludes the Get Started flow and enters the app. */
 function dismissUxpAgreement(){
   state.uxpAgreementShown = true;
   closePopup('uxpModal');
+  go('home');
 }
 
 function openPopup(id){
